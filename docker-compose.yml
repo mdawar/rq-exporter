@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+
+  rq_exporter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # target: main
+    image: rq_exporter:latest
+    ports:
+      - target: 8000
+        published: 8000
+        protocol: tcp
+        mode: host
+    environment:
+      RQ_REDIS_HOST: "redis"
+      RQ_REDIS_AUTH: "123456"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:5.0-alpine
+    ports:
+      - target: 6379
+        published: 6379
+        protocol: tcp
+        mode: host
+    command:
+      - redis-server
+      - --bind 0.0.0.0
+      - --requirepass 123456
+      - --loglevel debug
