@@ -1,17 +1,21 @@
 """
-Main Entrypoint:
+Main Entrypoint.
 
 Usage:
 
     $ # Start the HTTP server
     $ python -m rq_exporter
 
+    $ # Start the HTTP server on a specific port
+    $ python -m rq_exporter 8080
+
 """
 
 import sys
 import signal
 import time
-from prometheus_client import start_http_server
+
+from prometheus_client import start_wsgi_server
 
 
 def signal_handler(sig, frame):
@@ -21,7 +25,21 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 
-start_http_server(8000)
+PORT = 8000
+
+if len(sys.argv) > 1:
+    arg = sys.argv[1]
+
+    try:
+        PORT = int(sys.argv[1])
+    except ValueError as exc:
+        print(f'Invalid port number: {arg}')
+        sys.exit(1)
+
+
+start_wsgi_server(PORT)
+
+print(f'Server running on port {PORT}')
 
 
 while True:
