@@ -36,15 +36,17 @@ Prometheus metrics exporter for the RQ (Redis Queue) job queue library.
 
 **Request processing metrics:**
 
-* `rq_request_processing_seconds`: Request processing count and sum
+* `rq_request_processing_seconds_count`: Number of requests processed (Scrape counts)
 
     * **Type**: Summary
 
-    Exposes:
+* `rq_request_processing_seconds_sum`: Total sum of time in seconds processing the requests
 
-    * `rq_request_processing_seconds_count`: Number of requests processed (Scrape counts)
-    * `rq_request_processing_seconds_sum`: Total sum of time in seconds processing the requests
-    * `rq_request_processing_seconds_created`: Time created at (`time.time()` return value)
+    * **Type**: Summary
+
+* `rq_request_processing_seconds_created`: Time created at (`time.time()` return value)
+
+    * **Type**: Gauge
 
 ## Configuration
 
