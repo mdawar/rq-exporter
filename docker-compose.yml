@@ -6,8 +6,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      # target: main
     image: rq_exporter:latest
+    # Override Gunicorn command line options
+    # command: "-b 0.0.0.0:8080 --threads 2 --log-level debug"
     ports:
       - target: 8000
         published: 8000

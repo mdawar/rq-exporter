@@ -62,7 +62,7 @@ Or you can use these variables instead:
 * `RQ_REDIS_AUTH`: Redis password (default: `''`)
 * `RQ_REDIS_AUTH_FILE`: Redis password file (e.g. Path of a mounted Docker secret)
 
-When `RQ_REDIS_AUTH_FILE` is set ``RQ_REDIS_AUTH` will be ignored.
+When `RQ_REDIS_AUTH_FILE` is set `RQ_REDIS_AUTH` will be ignored.
 
 ## Starting a WSGI Server
 
@@ -100,3 +100,24 @@ But you can still use multiple threads with 1 worker process to handle multiple 
 ```console
 $ gunicorn rq_exporter:app -b 0.0.0.0:8000 --threads 2
 ```
+
+## Building the Docker Image
+
+```console
+$ # Build the docker image and tag it rq_exporter:latest
+$ docker build -t rq_exporter .
+$ # Run the image after the build has completed
+$ docker run -it rq_exporter
+$ # Override Gunicorn command line options
+$ docker run -it rq_exporter -b 0.0.0.0:8080 --log-level debug --threads 2
+$ # Provide environment variables
+$ docker run -it -e RQ_REDIS_HOST=redis -e RQ_REDIS_AUTH=123456 rq_exporter
+```
+
+The image can also be built using `docker-compose`:
+
+```console
+$ docker-compose build
+```
+
+Check out the `docker-compose.yml` file for usage example.
