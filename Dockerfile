@@ -1,0 +1,24 @@
+FROM python:3.8-slim-buster
+
+# Create a user and a group
+RUN groupadd -r exporter && useradd -r -g exporter exporter
+
+# Create the /app directory and set the owner
+RUN mkdir /app \
+    && chown -R exporter:exporter /app
+
+WORKDIR /app
+
+COPY requirements.txt /app
+
+RUN pip install --no-cache-dir -r /app/requirements.txt \
+    && pip install --no-cache-dir gunicorn
+
+# Copy the build context (defined in .dockerignore)
+COPY . /app
+
+USER exporter
+
+ENTRYPOINT ["gunicorn", "rq_exporter:app"]
+
+CMD ["-b", "0.0.0.0:8000", "--threads", "2", "--error-logfile", "-", "--log-level", "info"]
