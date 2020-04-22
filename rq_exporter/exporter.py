@@ -1,3 +1,10 @@
+"""
+RQ exporter module.
+
+Register the RQ collector and create the WSGI application instance.
+
+"""
+
 import sys
 
 from prometheus_client import make_wsgi_app
