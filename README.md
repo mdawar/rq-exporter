@@ -18,20 +18,20 @@ Prometheus metrics exporter for the RQ (Redis Queue) job queue library.
     rq_workers{name="fe9a433575e04685a53e4794b2eaeea9", queues="high,default,low", state="busy"} 1.0
     ```
 
-* `rq_jobs`: RQ jobs by queue and state
+* `rq_jobs`: RQ jobs by queue and status
 
     * **Type**: Gauge
-    * **Labels**: `queue`, `state`
+    * **Labels**: `queue`, `status`
 
     Example:
 
     ```
-    rq_jobs{queue="default", state="queued"} 2.0
-    rq_jobs{queue="default", state="started"} 1.0
-    rq_jobs{queue="default", state="finished"} 5.0
-    rq_jobs{queue="default", state="failed"} 1.0
-    rq_jobs{queue="default", state="deferred"} 1.0
-    rq_jobs{queue="default", state="scheduled"} 2.0
+    rq_jobs{queue="default", status="queued"} 2.0
+    rq_jobs{queue="default", status="started"} 1.0
+    rq_jobs{queue="default", status="finished"} 5.0
+    rq_jobs{queue="default", status="failed"} 1.0
+    rq_jobs{queue="default", status="deferred"} 1.0
+    rq_jobs{queue="default", status="scheduled"} 2.0
     ```
 
 **Request processing metrics:**
