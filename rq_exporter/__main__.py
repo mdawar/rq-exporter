@@ -14,12 +14,16 @@ Usage:
 import sys
 import signal
 import time
+import logging
 
 from prometheus_client import start_wsgi_server
 
 
+logger = logging.getLogger(__name__)
+
+
 def signal_handler(sig, frame):
-    print('Stopping the server...')
+    logger.info('Stopping the server...')
     sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
@@ -33,13 +37,13 @@ if len(sys.argv) > 1:
     try:
         PORT = int(sys.argv[1])
     except ValueError as exc:
-        print(f'Invalid port number: {arg}')
+        logger.error(f'Invalid port number: {arg}')
         sys.exit(1)
 
 
 start_wsgi_server(PORT)
 
-print(f'Server running on port {PORT}')
+logger.info(f'Server running on port {PORT}')
 
 
 while True:
