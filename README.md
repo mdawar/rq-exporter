@@ -66,6 +66,8 @@ Or you can use these variables instead:
 
 `RQ_EXPORTER_LOG_LEVEL`: Logging level (default: `INFO`), only used when executing the package `python -m rq_exporter`
 
+When using **Gunicorn** the level will be set from its logger, you can pass the logging level using the `--log-level` option.
+
 ## Starting a WSGI Server
 
 ```console
