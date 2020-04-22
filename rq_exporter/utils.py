@@ -99,5 +99,5 @@ def get_jobs_by_queue(connection=None):
     queues = Queue.all(connection=connection)
 
     return {
-        queue.name: get_queue_jobs(connection, queue) for queue in queues
+        queue.name: get_queue_jobs(queue, connection) for queue in queues
     }
