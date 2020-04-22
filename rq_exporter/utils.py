@@ -13,11 +13,11 @@ from . import config
 def get_redis_connection():
     """Get the Redis connection instance.
 
-    Raises:
-        IOError: On errors opening the password file.
-
     Returns:
         redis.Redis: Redis connection instance.
+
+    Raises:
+        IOError: On errors opening the password file.
 
     """
     if config.REDIS_URL:
@@ -47,6 +47,9 @@ def get_workers_stats(connection=None):
     Returns:
         list: List of worker stats as a dict {name, queues, state}
 
+    Raises:
+        redis.exceptions.RedisError: On Redis connection errors
+
     """
     workers = Worker.all(connection=connection)
 
@@ -69,6 +72,9 @@ def get_queue_jobs(queue_name, connection=None):
 
     Returns:
         dict: Number of jobs by job status
+
+    Raises:
+        redis.exceptions.RedisError: On Redis connection errors
 
     """
     if isinstance(queue_name, Queue):
@@ -94,6 +100,9 @@ def get_jobs_by_queue(connection=None):
 
     Returns:
         dict: Dictionary of job count by status for each queue
+
+    Raises:
+        redis.exceptions.RedisError: On Redis connection errors
 
     """
     queues = Queue.all(connection=connection)
