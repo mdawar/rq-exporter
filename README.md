@@ -125,3 +125,29 @@ $ docker-compose build
 ```
 
 Check out the `docker-compose.yml` file for usage example.
+
+## Development
+
+```console
+$ # Create a new virtualenv
+$ python -m venv /path/to/env
+$ # Activate the environment
+$ source /path/to/env/bin/activate
+$ # Install the requirements
+$ pip install -r requirements.txt
+```
+
+## Running the Tests
+
+```console
+$ python -m unittest
+```
+
+## Contributing
+
+1. Fork the repository
+2. Clone the forked repository `git clone <URL>`
+3. Create a new feature branch `git checkout -b <BRANCH_NAME>`
+4. Make changes and add tests if needed and commit your changes `git commit -am "Your commit message"`
+5. Push the new branch to Github `git push origin <BRANCH_NAME>`
+6. Create a pull request
