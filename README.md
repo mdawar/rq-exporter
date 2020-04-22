@@ -83,10 +83,10 @@ $ python -m rq_exporter 8080
 
 ## Using With Gunicorn
 
-The WSGI application instance is available at `rq_exporter.app`:
+The WSGI application can be created using the `rq_exporter.create_app()` function:
 
 ```console
-$ gunicorn rq_exporter:app -b 0.0.0.0:8000
+$ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:8000 --log-level info
 ```
 
 **Note about concurrency**:
