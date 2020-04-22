@@ -1,30 +1,22 @@
+import sys
+
 from prometheus_client import make_wsgi_app
 from prometheus_client.core import REGISTRY
-from redis import Redis
 
 from .collector import RQCollector
-from . import config
+from .utils import get_redis_connection
 
 
-if config.REDIS_URL:
-    redis_connection = Redis.from_url(config.REDIS_URL)
-else:
-    REDIS_AUTH = config.REDIS_AUTH
+"""
+Redis connection instance.
 
-    # Use password file if provided
-    if config.REDIS_AUTH_FILE:
-        try:
-            with open(config.REDIS_AUTH_FILE, 'r') as auth_file:
-                REDIS_AUTH = auth_file.read().strip()
-        except IOError as err:
-            print(err)
-
-    redis_connection = Redis(
-        host = config.REDIS_HOST,
-        port = config.REDIS_PORT,
-        db = config.REDIS_DB,
-        password = REDIS_AUTH
-    )
+"""
+try:
+    redis_connection = get_redis_connection()
+except IOError as exc:
+    # TODO: use logging module
+    print('Error creating a Redis connection: ', exc)
+    sys.exit(1)
 
 
 # Register the RQ collector
