@@ -59,7 +59,7 @@ Or you can use these variables instead:
 * `RQ_REDIS_HOST`: Redis host name (default: `localhost`)
 * `RQ_REDIS_PORT`: Redis port number (default: `6379`)
 * `RQ_REDIS_DB`: Redis database number (default: `0`)
-* `RQ_REDIS_AUTH`: Redis password (default: `''`)
+* `RQ_REDIS_AUTH`: Redis password (default: `None`)
 * `RQ_REDIS_AUTH_FILE`: Redis password file (e.g. Path of a mounted Docker secret)
 
 When `RQ_REDIS_AUTH_FILE` is set `RQ_REDIS_AUTH` will be ignored.
