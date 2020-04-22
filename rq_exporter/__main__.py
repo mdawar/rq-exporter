@@ -18,8 +18,17 @@ import logging
 
 from prometheus_client import start_wsgi_server
 
+from . import register_collector
+from . import config
 
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger(__package__)
+
+logging.basicConfig(
+    format = '[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s',
+    datefmt = '%Y-%m-%d %H:%M:%S',
+    level = config.LOG_LEVEL
+)
 
 
 def signal_handler(sig, frame):
@@ -41,6 +50,9 @@ if len(sys.argv) > 1:
         sys.exit(1)
 
 
+# Register the RQ collector
+register_collector()
+# Start the WSGI server
 start_wsgi_server(PORT)
 
 logger.info(f'Server running on port {PORT}')

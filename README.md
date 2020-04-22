@@ -62,7 +62,9 @@ Or you can use these variables instead:
 * `RQ_REDIS_AUTH`: Redis password (default: `None`)
 * `RQ_REDIS_AUTH_FILE`: Redis password file (e.g. Path of a mounted Docker secret)
 
-When `RQ_REDIS_AUTH_FILE` is set `RQ_REDIS_AUTH` will be ignored.
+**Note**: When `RQ_REDIS_AUTH_FILE` is set `RQ_REDIS_AUTH` will be ignored.
+
+`RQ_EXPORTER_LOG_LEVEL`: Logging level (default: `INFO`), only used when executing the package `python -m rq_exporter`
 
 ## Starting a WSGI Server
 

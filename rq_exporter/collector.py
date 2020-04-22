@@ -3,10 +3,15 @@ RQ metrics collector.
 
 """
 
+import logging
+
 from prometheus_client import Summary
 from prometheus_client.core import GaugeMetricFamily
 
 from .utils import get_workers_stats, get_jobs_by_queue
+
+
+logger = logging.getLogger(__name__)
 
 
 class RQCollector(object):
@@ -33,6 +38,8 @@ class RQCollector(object):
             RQ metrics for workers and jobs.
 
         """
+        logger.debug('Collecting the RQ metrics...')
+
         with self.summary.time():
             rq_workers = GaugeMetricFamily('rq_workers', 'RQ workers', labels=['name', 'state', 'queues'])
             rq_jobs = GaugeMetricFamily('rq_jobs', 'RQ jobs by state', labels=['queue', 'status'])

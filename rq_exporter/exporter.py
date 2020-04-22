@@ -18,23 +18,20 @@ from .utils import get_redis_connection
 logger = logging.getLogger(__name__)
 
 
-"""
-Redis connection instance.
+def register_collector():
+    """Register the RQ collector instance."""
+    try:
+        redis_connection = get_redis_connection()
+    except IOError:
+        logger.exception('Error creating a Redis connection')
+        sys.exit(1)
 
-"""
-try:
-    redis_connection = get_redis_connection()
-except IOError:
-    logger.exception('Error creating a Redis connection')
-    sys.exit(1)
-
-
-# Register the RQ collector
-REGISTRY.register(RQCollector(redis_connection))
+    # Register the RQ collector
+    REGISTRY.register(RQCollector(redis_connection))
 
 
-"""
-WSGI Application.
+def create_app():
+    """Create a WSGI application."""
+    register_collector()
 
-"""
-app = make_wsgi_app()
+    return make_wsgi_app()

@@ -3,4 +3,4 @@ Python RQ Prometheus Exporter.
 
 """
 
-from .exporter import app
+from .exporter import register_collector, create_app
