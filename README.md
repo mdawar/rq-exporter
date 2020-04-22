@@ -102,7 +102,7 @@ This is fine if you don't care about these metrics, these are only for measuring
 But you can still use multiple threads with 1 worker process to handle multiple concurrent requests:
 
 ```console
-$ gunicorn rq_exporter:app -b 0.0.0.0:8000 --threads 2
+$ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:8000 --threads 2
 ```
 
 ## Building the Docker Image
