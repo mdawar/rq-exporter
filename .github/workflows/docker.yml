@@ -1,0 +1,25 @@
+name: Build and Push the Docker Image
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    name: Build Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . -t ${{ secrets.DOCKER_USER }}/rq_exporter:latest -t ${{ secrets.DOCKER_USER }}/rq_exporter:${{ github.ref }}
+
+      - name: Run the tests
+        run: docker run -it --rm --entrypoint python ${{ secrets.DOCKER_USER }}/rq_exporter:latest -m unittest
+
+      - name: Push image to Docker Hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push ${{ secrets.DOCKER_USER }}/rq_exporter:latest
+          docker push ${{ secrets.DOCKER_USER }}/rq_exporter:${{ github.ref }}
