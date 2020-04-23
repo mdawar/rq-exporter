@@ -5,9 +5,6 @@ Register the RQ collector and create the WSGI application instance.
 
 """
 
-import sys
-import logging
-
 from prometheus_client import make_wsgi_app
 from prometheus_client.core import REGISTRY
 
@@ -15,15 +12,12 @@ from .collector import RQCollector
 from .utils import get_redis_connection
 
 
-logger = logging.getLogger(__name__)
-
-
 def register_collector():
     """Register the RQ collector instance.
 
     Raises:
         IOError: From `get_redis_connection` if there was an error opening
-                 the password file.
+            the password file.
         redis.exceptions.RedisError: On Redis connection errors.
 
     """
@@ -35,7 +29,12 @@ def register_collector():
 
 
 def create_app():
-    """Create a WSGI application."""
+    """Create a WSGI application.
+
+    Returns:
+        function: WSGI application function.
+
+    """
     register_collector()
 
     return make_wsgi_app()
