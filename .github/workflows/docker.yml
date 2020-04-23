@@ -17,13 +17,13 @@ jobs:
         run: echo "::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}"
 
       - name: Build image
-        run: docker build . -t ${{ secrets.DOCKER_USER }}/rq_exporter:latest -t ${{ secrets.DOCKER_USER }}/rq_exporter:$GIT_TAG
+        run: docker build . -t ${{ secrets.DOCKER_USER }}/rq-exporter:latest -t ${{ secrets.DOCKER_USER }}/rq-exporter:${GIT_TAG}
 
       - name: Run the tests
-        run: docker run --rm --entrypoint python ${{ secrets.DOCKER_USER }}/rq_exporter:latest -m unittest
+        run: docker run --rm --entrypoint python ${{ secrets.DOCKER_USER }}/rq-exporter:latest -m unittest
 
       - name: Push image to Docker Hub
         run: |
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push ${{ secrets.DOCKER_USER }}/rq_exporter:latest
-          docker push ${{ secrets.DOCKER_USER }}/rq_exporter:$GIT_TAG
+          docker push ${{ secrets.DOCKER_USER }}/rq-exporter:latest
+          docker push ${{ secrets.DOCKER_USER }}/rq-exporter:${GIT_TAG}
