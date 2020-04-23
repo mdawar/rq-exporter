@@ -1,5 +1,8 @@
 # Python RQ Prometheus Exporter
 
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/mdawar/rq-exporter?sort=semver)
+![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/mdawar/rq-exporter?sort=semver)
+
 Prometheus metrics exporter for the RQ (Redis Queue) job queue library.
 
 ## Docker Image
@@ -121,14 +124,14 @@ $ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:8000 --threads 2
 ## Building the Docker Image
 
 ```console
-$ # Build the docker image and tag it rq_exporter:latest
-$ docker build -t rq_exporter .
+$ # Build the docker image and tag it rq-exporter:latest
+$ docker build -t rq-exporter .
 $ # Run the image after the build has completed
-$ docker run -it rq_exporter
+$ docker run -it rq-exporter
 $ # Override Gunicorn command line options
-$ docker run -it rq_exporter -b 0.0.0.0:8080 --log-level debug --threads 2
+$ docker run -it rq-exporter -b 0.0.0.0:8080 --log-level debug --threads 2
 $ # Provide environment variables
-$ docker run -it -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq_exporter
+$ docker run -it -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq-exporter
 ```
 
 The image can also be built using `docker-compose`:
