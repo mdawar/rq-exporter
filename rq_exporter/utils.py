@@ -67,7 +67,7 @@ def get_queue_jobs(queue_name, connection=None):
     """Get the jobs by status of a Queue.
 
     Args:
-        queue_name: The RQ Queue name or instance
+        queue_name: The RQ Queue name
         connection: Redis connection instance
 
     Returns:
@@ -77,9 +77,6 @@ def get_queue_jobs(queue_name, connection=None):
         redis.exceptions.RedisError: On Redis connection errors
 
     """
-    if isinstance(queue_name, Queue):
-        queue_name = queue_name.name
-
     queue = Queue(queue_name, connection=connection)
 
     return {
@@ -108,5 +105,5 @@ def get_jobs_by_queue(connection=None):
     queues = Queue.all(connection=connection)
 
     return {
-        queue.name: get_queue_jobs(queue, connection) for queue in queues
+        q.name: get_queue_jobs(q.name, connection) for q in queues
     }
