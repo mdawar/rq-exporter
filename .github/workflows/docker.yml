@@ -16,7 +16,7 @@ jobs:
         run: docker build . -t ${{ secrets.DOCKER_USER }}/rq_exporter:latest -t ${{ secrets.DOCKER_USER }}/rq_exporter:${GITHUB_REF/refs\/tags\//}
 
       - name: Run the tests
-        run: docker run -it --rm --entrypoint python ${{ secrets.DOCKER_USER }}/rq_exporter:latest -m unittest
+        run: docker run --rm --entrypoint python ${{ secrets.DOCKER_USER }}/rq_exporter:latest -m unittest
 
       - name: Push image to Docker Hub
         run: |
