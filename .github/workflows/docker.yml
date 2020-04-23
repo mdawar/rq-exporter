@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . -t ${{ secrets.DOCKER_USER }}/rq_exporter:latest -t ${{ secrets.DOCKER_USER }}/rq_exporter:${{ github.ref }}
+        run: docker build . -t ${{ secrets.DOCKER_USER }}/rq_exporter:latest -t ${{ secrets.DOCKER_USER }}/rq_exporter:${GITHUB_REF/refs\/tags\//}
 
       - name: Run the tests
         run: docker run -it --rm --entrypoint python ${{ secrets.DOCKER_USER }}/rq_exporter:latest -m unittest
@@ -22,4 +22,4 @@ jobs:
         run: |
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push ${{ secrets.DOCKER_USER }}/rq_exporter:latest
-          docker push ${{ secrets.DOCKER_USER }}/rq_exporter:${{ github.ref }}
+          docker push ${{ secrets.DOCKER_USER }}/rq_exporter:${GITHUB_REF/refs\/tags\//}
