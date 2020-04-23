@@ -17,6 +17,8 @@ jobs:
         run: echo "::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}"
 
       - name: Build image
+        env:
+          DOCKER_BUILDKIT: 1
         run: docker build . -t ${{ secrets.DOCKER_USER }}/rq-exporter:latest -t ${{ secrets.DOCKER_USER }}/rq-exporter:${GIT_TAG}
 
       - name: Run the tests
