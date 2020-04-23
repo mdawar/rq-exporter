@@ -1,5 +1,6 @@
 *
 !requirements.txt
 !rq_exporter
+!tests
 **/*.pyc
 **/__pycache__
