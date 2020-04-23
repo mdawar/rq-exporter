@@ -17,6 +17,7 @@ import time
 import logging
 
 from prometheus_client import start_wsgi_server
+from redis.exceptions import RedisError
 
 from . import register_collector
 from . import config
@@ -51,7 +52,12 @@ if len(sys.argv) > 1:
 
 
 # Register the RQ collector
-register_collector()
+try:
+    register_collector()
+except (IOError, RedisError) as exc:
+    logger.exception('There was an error starting the RQ exporter')
+    sys.exit(1)
+
 # Start the WSGI server
 start_wsgi_server(PORT)
 
