@@ -4,14 +4,14 @@ Tests for the rq_exporter.utils module.
 """
 
 import unittest
-from unittest.mock import patch, mock_open, Mock, PropertyMock
+from unittest.mock import patch, mock_open, Mock, PropertyMock, call
 
 import rq
 from rq.job import JobStatus
 from redis.exceptions import RedisError
 
 from rq_exporter import config
-from rq_exporter.utils import get_redis_connection, get_workers_stats, get_queue_jobs
+from rq_exporter.utils import get_redis_connection, get_workers_stats, get_queue_jobs, get_jobs_by_queue
 
 
 class GetRedisConnectionTestCase(unittest.TestCase):
@@ -267,5 +267,81 @@ class GetQueueJobsTestCase(unittest.TestCase):
                 JobStatus.FAILED: 5,
                 JobStatus.DEFERRED: 1,
                 JobStatus.SCHEDULED: 4
+            }
+        )
+
+
+class GetJobsByQueueTestCase(unittest.TestCase):
+    """Tests for the `get_jobs_by_queue` function."""
+
+    @patch('rq_exporter.utils.Queue')
+    def test_on_redis_errors_raises_RedisError(self, Queue):
+        """On Redis connection errors, exceptions subclasses of `RedisError` will be raised."""
+        Queue.all.side_effect = RedisError('Connection error')
+
+        connection = Mock()
+
+        with self.assertRaises(RedisError):
+            get_jobs_by_queue(connection)
+
+        Queue.all.assert_called_with(connection=connection)
+
+    @patch('rq_exporter.utils.Queue')
+    def test_return_value_without_any_queues_available(self, Queue):
+        """If there are no queues, an empty dict must be returned."""
+        Queue.all.return_value = []
+
+        jobs = get_jobs_by_queue()
+
+        Queue.all.assert_called_with(connection=None)
+        self.assertEqual(jobs, {})
+
+    @patch('rq_exporter.utils.get_queue_jobs')
+    @patch('rq_exporter.utils.Queue')
+    def test_return_value_with_queues_available(self, Queue, get_queue_jobs):
+        """On success a dict of the queue names and their jobs dicts must be returned."""
+        q_default = Mock()
+        q_default.configure_mock(name='default')
+        q_default_jobs = {
+            JobStatus.QUEUED: 2,
+            JobStatus.STARTED: 3,
+            JobStatus.FINISHED: 15,
+            JobStatus.FAILED: 5,
+            JobStatus.DEFERRED: 1,
+            JobStatus.SCHEDULED: 4
+        }
+
+        q_high = Mock()
+        q_high.configure_mock(name='high')
+        q_high_jobs = {
+            JobStatus.QUEUED: 10,
+            JobStatus.STARTED: 4,
+            JobStatus.FINISHED: 25,
+            JobStatus.FAILED: 22,
+            JobStatus.DEFERRED: 5,
+            JobStatus.SCHEDULED: 1
+        }
+
+        Queue.all.return_value = [q_default, q_high]
+
+
+        get_queue_jobs.side_effect = [q_default_jobs, q_high_jobs]
+
+        connection = Mock()
+
+        jobs = get_jobs_by_queue(connection)
+
+        Queue.all.assert_called_with(connection=connection)
+
+        get_queue_jobs.assert_has_calls([
+            call('default', connection),
+            call('high', connection)
+        ])
+
+        self.assertEqual(
+            jobs,
+            {
+                'default': q_default_jobs,
+                'high': q_high_jobs
             }
         )
