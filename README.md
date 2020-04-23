@@ -2,6 +2,19 @@
 
 Prometheus metrics exporter for the RQ (Redis Queue) job queue library.
 
+## Docker Image
+
+This exporter is available as a Docker image:
+
+```console
+$ # Pull the latest image
+$ docker pull mdawar/rq-exporter
+$ # Pull a specific version
+$ docker pull mdawar/rq-exporter:v1.0.0
+```
+
+All the Git tags are available as [Docker image tags](https://hub.docker.com/r/mdawar/rq-exporter/tags).
+
 ## Exported Metrics
 
 **RQ Metrics:**
