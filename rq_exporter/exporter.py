@@ -19,15 +19,19 @@ logger = logging.getLogger(__name__)
 
 
 def register_collector():
-    """Register the RQ collector instance."""
-    try:
-        redis_connection = get_redis_connection()
-    except IOError:
-        logger.exception('Error creating a Redis connection')
-        sys.exit(1)
+    """Register the RQ collector instance.
 
+    Raises:
+        IOError: From `get_redis_connection` if there was an error opening
+                 the password file.
+        redis.exceptions.RedisError: On Redis connection errors.
+
+    """
     # Register the RQ collector
-    REGISTRY.register(RQCollector(redis_connection))
+    # The `collect` method is called on registration
+    REGISTRY.register(RQCollector(
+        get_redis_connection()
+    ))
 
 
 def create_app():
