@@ -16,7 +16,7 @@ $ # Pull a specific version
 $ docker pull mdawar/rq-exporter:v1.0.0
 ```
 
-All the Git tags are available as [Docker image tags](https://hub.docker.com/r/mdawar/rq-exporter/tags).
+The released versions are available as [Docker image tags](https://hub.docker.com/r/mdawar/rq-exporter/tags).
 
 ## Exported Metrics
 
@@ -52,7 +52,7 @@ All the Git tags are available as [Docker image tags](https://hub.docker.com/r/m
 
 **Request processing metrics:**
 
-* `rq_request_processing_seconds_count`: Number of requests processed (Scrape counts)
+* `rq_request_processing_seconds_count`: Number of requests processed
 
     * **Type**: Summary
 
