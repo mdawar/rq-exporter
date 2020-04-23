@@ -18,7 +18,7 @@ class RQCollector(object):
     """RQ stats collector.
 
     Args:
-        connection: Redis connection instance.
+        connection (redis.Redis): Redis connection instance.
 
     """
 
