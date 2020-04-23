@@ -16,7 +16,7 @@ services:
         mode: host
     environment:
       RQ_REDIS_HOST: "redis"
-      RQ_REDIS_AUTH: "123456"
+      RQ_REDIS_PASS: "123456"
     depends_on:
       - redis
 
