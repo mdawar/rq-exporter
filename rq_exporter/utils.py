@@ -42,7 +42,7 @@ def get_workers_stats(connection=None):
     """Get the RQ workers stats.
 
     Args:
-        connection: Redis connection instance
+        connection (redis.Redis): Redis connection instance
 
     Returns:
         list: List of worker stats as a dict {name, queues, state}
@@ -67,8 +67,8 @@ def get_queue_jobs(queue_name, connection=None):
     """Get the jobs by status of a Queue.
 
     Args:
-        queue_name: The RQ Queue name
-        connection: Redis connection instance
+        queue_name (str): The RQ Queue name
+        connection (redis.Redis): Redis connection instance
 
     Returns:
         dict: Number of jobs by job status
@@ -93,7 +93,7 @@ def get_jobs_by_queue(connection=None):
     """Get the current jobs by queue.
 
     Args:
-        connection: Redis connection instance
+        connection (redis.Redis): Redis connection instance
 
     Returns:
         dict: Dictionary of job count by status for each queue
