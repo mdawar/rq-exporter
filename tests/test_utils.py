@@ -4,12 +4,14 @@ Tests for the rq_exporter.utils module.
 """
 
 import unittest
-from unittest.mock import patch, mock_open, Mock
+from unittest.mock import patch, mock_open, Mock, PropertyMock
 
+import rq
+from rq.job import JobStatus
 from redis.exceptions import RedisError
 
 from rq_exporter import config
-from rq_exporter.utils import get_redis_connection, get_workers_stats
+from rq_exporter.utils import get_redis_connection, get_workers_stats, get_queue_jobs
 
 
 class GetRedisConnectionTestCase(unittest.TestCase):
@@ -159,7 +161,6 @@ class GetWorkersStatsTestCase(unittest.TestCase):
         connection = Mock()
 
         with self.assertRaises(RedisError):
-
             get_workers_stats(connection)
 
         Worker.all.assert_called_with(connection=connection)
@@ -190,21 +191,18 @@ class GetWorkersStatsTestCase(unittest.TestCase):
         q_low.configure_mock(name='low')
 
         worker_one = Mock()
-        worker_one_attrs = {
+        worker_one.configure_mock(**{
             'name': 'worker_one',
             'queues': [q_default],
             'get_state.return_value': 'idle'
-        }
-        worker_one.configure_mock(**worker_one_attrs)
+        })
 
         worker_two = Mock()
-        worker_two_attrs = {
+        worker_two.configure_mock(**{
             'name': 'worker_two',
             'queues': [q_high, q_default, q_low],
             'get_state.return_value': 'busy'
-        }
-        worker_two.configure_mock(**worker_two_attrs)
-
+        })
 
         Worker.all.return_value = [worker_one, worker_two]
 
@@ -228,4 +226,46 @@ class GetWorkersStatsTestCase(unittest.TestCase):
                     'state': 'busy'
                 }
             ]
+        )
+
+
+class GetQueueJobsTestCase(unittest.TestCase):
+    """Tests for the `get_queue_jobs` function."""
+
+    @patch('rq_exporter.utils.Queue')
+    def test_on_redis_errors_raises_RedisError(self, Queue):
+        """On Redis connection errors, exceptions subclasses of `RedisError` will be raised."""
+        type(Queue.return_value).count = PropertyMock(side_effect=RedisError('Connection error'))
+
+        connection = Mock()
+
+        with self.assertRaises(RedisError):
+            get_queue_jobs('queue_name', connection)
+
+        Queue.assert_called_with('queue_name', connection=connection)
+
+    @patch('rq_exporter.utils.Queue')
+    def test_get_queue_jobs_return_value(self, Queue):
+        """On success a dict of jobs count per status must be returned."""
+        type(Queue.return_value).count = PropertyMock(return_value=2)
+        type(Queue.return_value.started_job_registry).count = PropertyMock(return_value=3)
+        type(Queue.return_value.finished_job_registry).count = PropertyMock(return_value=15)
+        type(Queue.return_value.failed_job_registry).count = PropertyMock(return_value=5)
+        type(Queue.return_value.deferred_job_registry).count = PropertyMock(return_value=1)
+        type(Queue.return_value.scheduled_job_registry).count = PropertyMock(return_value=4)
+
+        queue_jobs = get_queue_jobs('queue_name')
+
+        Queue.assert_called_with('queue_name', connection=None)
+
+        self.assertEqual(
+            queue_jobs,
+            {
+                JobStatus.QUEUED: 2,
+                JobStatus.STARTED: 3,
+                JobStatus.FINISHED: 15,
+                JobStatus.FAILED: 5,
+                JobStatus.DEFERRED: 1,
+                JobStatus.SCHEDULED: 4
+            }
         )
