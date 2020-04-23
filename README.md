@@ -59,10 +59,10 @@ Or you can use these variables instead:
 * `RQ_REDIS_HOST`: Redis host name (default: `localhost`)
 * `RQ_REDIS_PORT`: Redis port number (default: `6379`)
 * `RQ_REDIS_DB`: Redis database number (default: `0`)
-* `RQ_REDIS_AUTH`: Redis password (default: `None`)
-* `RQ_REDIS_AUTH_FILE`: Redis password file (e.g. Path of a mounted Docker secret)
+* `RQ_REDIS_PASS`: Redis password (default: `None`)
+* `RQ_REDIS_PASS_FILE`: Redis password file (e.g. Path of a mounted Docker secret)
 
-**Note**: When `RQ_REDIS_AUTH_FILE` is set `RQ_REDIS_AUTH` will be ignored.
+**Note**: When `RQ_REDIS_PASS_FILE` is set `RQ_REDIS_PASS` will be ignored.
 
 `RQ_EXPORTER_LOG_LEVEL`: Logging level (default: `INFO`), only used when executing the package `python -m rq_exporter`
 
@@ -115,7 +115,7 @@ $ docker run -it rq_exporter
 $ # Override Gunicorn command line options
 $ docker run -it rq_exporter -b 0.0.0.0:8080 --log-level debug --threads 2
 $ # Provide environment variables
-$ docker run -it -e RQ_REDIS_HOST=redis -e RQ_REDIS_AUTH=123456 rq_exporter
+$ docker run -it -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq_exporter
 ```
 
 The image can also be built using `docker-compose`:

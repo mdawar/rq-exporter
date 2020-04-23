@@ -23,18 +23,18 @@ def get_redis_connection():
     if config.REDIS_URL:
         return Redis.from_url(config.REDIS_URL)
 
-    REDIS_AUTH = config.REDIS_AUTH
+    REDIS_PASS = config.REDIS_PASS
 
     # Use password file if provided
-    if config.REDIS_AUTH_FILE:
-        with open(config.REDIS_AUTH_FILE, 'r') as auth_file:
-            REDIS_AUTH = auth_file.read().strip()
+    if config.REDIS_PASS_FILE:
+        with open(config.REDIS_PASS_FILE, 'r') as pass_file:
+            REDIS_PASS = pass_file.read().strip()
 
     return Redis(
         host = config.REDIS_HOST,
         port = config.REDIS_PORT,
         db = config.REDIS_DB,
-        password = REDIS_AUTH
+        password = REDIS_PASS
     )
 
 

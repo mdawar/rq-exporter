@@ -23,8 +23,8 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         REDIS_HOST = 'redis_host',
         REDIS_PORT = '6363',
         REDIS_DB = '1',
-        REDIS_AUTH = '123456',
-        REDIS_AUTH_FILE = '/run/secrets/redis_pass'
+        REDIS_PASS = '123456',
+        REDIS_PASS_FILE = '/run/secrets/redis_pass'
     )
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_from_url(self):
@@ -46,8 +46,8 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         REDIS_HOST = 'redis_host',
         REDIS_PORT = '6363',
         REDIS_DB = '1',
-        REDIS_AUTH = None,
-        REDIS_AUTH_FILE = None
+        REDIS_PASS = None,
+        REDIS_PASS_FILE = None
     )
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_without_url(self):
@@ -74,12 +74,12 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         REDIS_HOST = 'redis_host',
         REDIS_PORT = '6379',
         REDIS_DB = '0',
-        REDIS_AUTH = '123456',
-        REDIS_AUTH_FILE = None
+        REDIS_PASS = '123456',
+        REDIS_PASS_FILE = None
     )
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_with_password(self):
-        """The option `config.REDIS_AUTH` must be used if `config.REDIS_AUTH_FILE` is not set."""
+        """The option `config.REDIS_PASS` must be used if `config.REDIS_PASS_FILE` is not set."""
         with patch('rq_exporter.utils.Redis') as Redis:
             connection = get_redis_connection()
 
@@ -102,12 +102,12 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         REDIS_HOST = 'redis_host',
         REDIS_PORT = '6379',
         REDIS_DB = '0',
-        REDIS_AUTH = '123456',
-        REDIS_AUTH_FILE = '/path/to/redis_pass'
+        REDIS_PASS = '123456',
+        REDIS_PASS_FILE = '/path/to/redis_pass'
     )
     @patch('builtins.open', mock_open(read_data=' FILEPASS \n'))
     def test_creating_redis_connection_with_password_from_file(self):
-        """The option `config.REDIS_AUTH_FILE` must be used if set."""
+        """The option `config.REDIS_PASS_FILE` must be used if set."""
         with patch('rq_exporter.utils.Redis') as Redis:
             connection = get_redis_connection()
 
@@ -130,8 +130,8 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         REDIS_HOST = 'redis_host',
         REDIS_PORT = '6379',
         REDIS_DB = '0',
-        REDIS_AUTH = '123456',
-        REDIS_AUTH_FILE = '/path/to/redis_pass'
+        REDIS_PASS = '123456',
+        REDIS_PASS_FILE = '/path/to/redis_pass'
     )
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_open_file_raises_IOError(self):
