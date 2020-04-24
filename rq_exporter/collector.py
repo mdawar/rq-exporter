@@ -5,6 +5,7 @@ RQ metrics collector.
 
 import logging
 
+from rq import Connection
 from prometheus_client import Summary
 from prometheus_client.core import GaugeMetricFamily
 
@@ -37,20 +38,24 @@ class RQCollector(object):
         Yields:
             RQ metrics for workers and jobs.
 
+        Raises:
+            redis.exceptions.RedisError: On Redis connection errors
+
         """
         logger.debug('Collecting the RQ metrics...')
 
         with self.summary.time():
-            rq_workers = GaugeMetricFamily('rq_workers', 'RQ workers', labels=['name', 'state', 'queues'])
-            rq_jobs = GaugeMetricFamily('rq_jobs', 'RQ jobs by state', labels=['queue', 'status'])
+            with Connection(self.connection):
+                rq_workers = GaugeMetricFamily('rq_workers', 'RQ workers', labels=['name', 'state', 'queues'])
+                rq_jobs = GaugeMetricFamily('rq_jobs', 'RQ jobs by state', labels=['queue', 'status'])
 
-            for worker in get_workers_stats(self.connection):
-                rq_workers.add_metric([worker['name'], worker['state'], ','.join(worker['queues'])], 1)
+                for worker in get_workers_stats():
+                    rq_workers.add_metric([worker['name'], worker['state'], ','.join(worker['queues'])], 1)
 
-            yield rq_workers
+                yield rq_workers
 
-            for (queue_name, jobs) in get_jobs_by_queue(self.connection).items():
-                for (status, count) in jobs.items():
-                    rq_jobs.add_metric([queue_name, status], count)
+                for (queue_name, jobs) in get_jobs_by_queue().items():
+                    for (status, count) in jobs.items():
+                        rq_jobs.add_metric([queue_name, status], count)
 
-            yield rq_jobs
+                yield rq_jobs

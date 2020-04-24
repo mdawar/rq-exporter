@@ -38,11 +38,8 @@ def get_redis_connection():
     )
 
 
-def get_workers_stats(connection=None):
+def get_workers_stats():
     """Get the RQ workers stats.
-
-    Args:
-        connection (redis.Redis): Redis connection instance
 
     Returns:
         list: List of worker stats as a dict {name, queues, state}
@@ -51,7 +48,7 @@ def get_workers_stats(connection=None):
         redis.exceptions.RedisError: On Redis connection errors
 
     """
-    workers = Worker.all(connection=connection)
+    workers = Worker.all()
 
     return [
         {
@@ -63,12 +60,11 @@ def get_workers_stats(connection=None):
     ]
 
 
-def get_queue_jobs(queue_name, connection=None):
+def get_queue_jobs(queue_name):
     """Get the jobs by status of a Queue.
 
     Args:
         queue_name (str): The RQ Queue name
-        connection (redis.Redis): Redis connection instance
 
     Returns:
         dict: Number of jobs by job status
@@ -77,7 +73,7 @@ def get_queue_jobs(queue_name, connection=None):
         redis.exceptions.RedisError: On Redis connection errors
 
     """
-    queue = Queue(queue_name, connection=connection)
+    queue = Queue(queue_name)
 
     return {
         JobStatus.QUEUED: queue.count,
@@ -89,11 +85,8 @@ def get_queue_jobs(queue_name, connection=None):
     }
 
 
-def get_jobs_by_queue(connection=None):
+def get_jobs_by_queue():
     """Get the current jobs by queue.
-
-    Args:
-        connection (redis.Redis): Redis connection instance
 
     Returns:
         dict: Dictionary of job count by status for each queue
@@ -102,8 +95,8 @@ def get_jobs_by_queue(connection=None):
         redis.exceptions.RedisError: On Redis connection errors
 
     """
-    queues = Queue.all(connection=connection)
+    queues = Queue.all()
 
     return {
-        q.name: get_queue_jobs(q.name, connection) for q in queues
+        q.name: get_queue_jobs(q.name) for q in queues
     }
