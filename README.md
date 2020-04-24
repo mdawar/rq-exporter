@@ -6,14 +6,20 @@
 [![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/pypi/rq-exporter)](https://libraries.io/pypi/rq-exporter)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/mdawar/rq-exporter?sort=semver)](https://hub.docker.com/r/mdawar/rq-exporter)
 
-Prometheus metrics exporter for the RQ (Redis Queue) job queue library.
+Prometheus metrics exporter Python RQ (Redis Queue) job queue library.
 
 ## Installation
 
+Install the Python package:
+
 ```console
-$ # Install the package
 $ pip install rq-exporter
-$ # Run the exporter on the port 8000
+```
+
+## Starting the Server
+
+```console
+$ # Run the exporter on port 8000
 $ rq-exporter
 $ # Run the exporter on a different port
 $ rq-exporter 8080
@@ -21,7 +27,7 @@ $ rq-exporter 8080
 
 ## Docker Image
 
-This exporter is available as a Docker image:
+This exporter is available as a [Docker image](https://hub.docker.com/r/mdawar/rq-exporter):
 
 ```console
 $ # Pull the latest image
@@ -31,6 +37,20 @@ $ docker pull mdawar/rq-exporter:v1.0.0
 ```
 
 The released versions are available as [Docker image tags](https://hub.docker.com/r/mdawar/rq-exporter/tags).
+
+Usage:
+
+```console
+$ # Run the exporter and publish the port 8000 on the host
+$ docker run -it -p 8000:8000 rq-exporter
+$ # Use the -d option to run the container in the background (detached)
+$ docker run -d -p 8000:8000 rq-exporter
+$ # Override Gunicorn command line options
+$ # All the command line arguments will be passed to gunicorn
+$ docker run -it -p 8080:8080 rq-exporter -b 0.0.0.0:8080 --log-level debug --threads 2
+$ # Set environment variables using -e
+$ docker run -it -p 8000:8000 -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq-exporter
+```
 
 ## Exported Metrics
 
@@ -98,19 +118,6 @@ Or you can use these variables instead:
 
 When using **Gunicorn** the level will be set from its logger, you can pass the logging level using the `--log-level` option.
 
-## Starting a WSGI Server
-
-```console
-# Start a WSGI server on port 8000
-$ python -m rq_exporter
-```
-
-To start the server on a different port
-
-```console
-$ python -m rq_exporter 8080
-```
-
 ## Using With Gunicorn
 
 The WSGI application can be created using the `rq_exporter.create_app()` function:
@@ -140,12 +147,6 @@ $ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:8000 --threads 2
 ```console
 $ # Build the docker image and tag it rq-exporter:latest
 $ docker build -t rq-exporter .
-$ # Run the image after the build has completed
-$ docker run -it -p 8000:8000 rq-exporter
-$ # Override Gunicorn command line options
-$ docker run -it -p 8080:8080 rq-exporter -b 0.0.0.0:8080 --log-level debug --threads 2
-$ # Provide environment variables
-$ docker run -it -p 8000:8000 -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq-exporter
 ```
 
 The image can also be built using `docker-compose`:
@@ -165,6 +166,10 @@ $ # Activate the environment
 $ source /path/to/env/bin/activate
 $ # Install the requirements
 $ pip install -r requirements.txt
+$ # Run the exporter on port 8000
+$ python -m rq_exporter
+$ # Run the exporter on a different port
+$ python -m rq_exporter 8080
 ```
 
 ## Running the Tests
