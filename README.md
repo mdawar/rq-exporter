@@ -5,6 +5,17 @@
 
 Prometheus metrics exporter for the RQ (Redis Queue) job queue library.
 
+## Installation
+
+```console
+$ # Install the package
+$ pip install rq-exporter
+$ # Run the exporter on the port 8000
+$ rq-exporter
+$ # Run the exporter on a different port
+$ rq-exporter 8080
+```
+
 ## Docker Image
 
 This exporter is available as a Docker image:
