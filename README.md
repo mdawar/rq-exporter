@@ -1,7 +1,10 @@
 # Python RQ Prometheus Exporter
 
-![Docker Image Version (latest semver)](https://img.shields.io/docker/v/mdawar/rq-exporter?sort=semver)
-![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/mdawar/rq-exporter?sort=semver)
+[![PyPI](https://img.shields.io/pypi/v/rq-exporter)](https://pypi.org/project/rq-exporter/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/rq-exporter)](https://pypi.org/project/rq-exporter/)
+[![PyPI - Wheel](https://img.shields.io/pypi/wheel/rq-exporter)](https://pypi.org/project/rq-exporter/)
+[![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/pypi/rq-exporter)](https://libraries.io/pypi/rq-exporter)
+[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/mdawar/rq-exporter?sort=semver)](https://hub.docker.com/r/mdawar/rq-exporter)
 
 Prometheus metrics exporter for the RQ (Redis Queue) job queue library.
 
