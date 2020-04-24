@@ -181,26 +181,17 @@ class GetWorkersStatsTestCase(unittest.TestCase):
     @patch('rq_exporter.utils.Worker')
     def test_returns_worker_stats(self, Worker):
         """When there are workers, a list of worker info dicts must be returned."""
-        q_default = Mock()
-        q_default.configure_mock(name='default')
-
-        q_high = Mock()
-        q_high.configure_mock(name='high')
-
-        q_low = Mock()
-        q_low.configure_mock(name='low')
-
         worker_one = Mock()
         worker_one.configure_mock(**{
             'name': 'worker_one',
-            'queues': [q_default],
+            'queue_names.return_value': ['default'],
             'get_state.return_value': 'idle'
         })
 
         worker_two = Mock()
         worker_two.configure_mock(**{
             'name': 'worker_two',
-            'queues': [q_high, q_default, q_low],
+            'queue_names.return_value': ['high', 'default', 'low'],
             'get_state.return_value': 'busy'
         })
 

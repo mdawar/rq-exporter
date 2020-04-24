@@ -56,7 +56,7 @@ def get_workers_stats(connection=None):
     return [
         {
             'name': w.name,
-            'queues': [q.name for q in w.queues],
+            'queues': w.queue_names(),
             'state': w.get_state()
         }
         for w in workers
