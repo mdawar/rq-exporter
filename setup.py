@@ -43,6 +43,6 @@ setup(
     ],
     python_requires='>=3.6',
     entry_points = {
-        'console_scripts': ['rq-exporter = rq_exporter.__main__']
+        'console_scripts': ['rq-exporter = rq_exporter.__main__:main']
     }
 )
