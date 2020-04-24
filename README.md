@@ -13,21 +13,13 @@ Prometheus metrics exporter Python RQ (Redis Queue) job queue library.
 Install the Python package:
 
 ```console
+$ # Install the latest version
 $ pip install rq-exporter
+$ # Install a specific version
+$ pip install rq-exporter==1.0.0
 ```
 
-## Starting the Server
-
-```console
-$ # Run the exporter on port 8000
-$ rq-exporter
-$ # Run the exporter on a different port
-$ rq-exporter 8080
-```
-
-## Docker Image
-
-This exporter is available as a [Docker image](https://hub.docker.com/r/mdawar/rq-exporter):
+Or download the [Docker image](https://hub.docker.com/r/mdawar/rq-exporter):
 
 ```console
 $ # Pull the latest image
@@ -38,7 +30,18 @@ $ docker pull mdawar/rq-exporter:v1.0.0
 
 The released versions are available as [Docker image tags](https://hub.docker.com/r/mdawar/rq-exporter/tags).
 
-Usage:
+## Usage
+
+**Python package**:
+
+```console
+$ # Run the exporter on port 8000
+$ rq-exporter
+$ # Run the exporter on a different port
+$ rq-exporter 8080
+```
+
+**Docker image**:
 
 ```console
 $ # Run the exporter and publish the port 8000 on the host
