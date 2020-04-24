@@ -69,10 +69,12 @@ class RQCollectorTestCase(unittest.TestCase):
         connection = Mock()
         collector = RQCollector(connection)
 
-        list(collector.collect())
+        with patch('rq_exporter.collector.Connection') as Connection:
+            list(collector.collect())
 
-        get_workers_stats.assert_called_with(connection)
-        get_jobs_by_queue.assert_called_with(connection)
+        Connection.assert_called_once_with(connection)
+        get_workers_stats.assert_called_once_with()
+        get_jobs_by_queue.assert_called_once_with()
 
     def test_metrics_with_empty_data(self, get_workers_stats, get_jobs_by_queue):
         """Test the workers and jobs metrics when there's no data."""
@@ -124,9 +126,8 @@ class RQCollectorTestCase(unittest.TestCase):
         # On registration the `collect` method is called
         self.registry.register(RQCollector())
 
-        # No connection was passed
-        get_workers_stats.assert_called_with(None)
-        get_jobs_by_queue.assert_called_with(None)
+        get_workers_stats.assert_called_once_with()
+        get_jobs_by_queue.assert_called_once_with()
 
         for w in workers:
             self.assertEqual(1, self.registry.get_sample_value(

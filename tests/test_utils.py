@@ -158,23 +158,17 @@ class GetWorkersStatsTestCase(unittest.TestCase):
         """On Redis connection errors, exceptions subclasses of `RedisError` will be raised."""
         Worker.all.side_effect = RedisError('Connection error')
 
-        connection = Mock()
-
         with self.assertRaises(RedisError):
-            get_workers_stats(connection)
-
-        Worker.all.assert_called_with(connection=connection)
+            get_workers_stats()
 
     @patch('rq_exporter.utils.Worker')
     def test_returns_empty_list_without_workers(self, Worker):
         """Without any available workers an empty list must be returned."""
         Worker.all.return_value = []
 
-        connection = Mock()
+        workers = get_workers_stats()
 
-        workers = get_workers_stats(connection)
-
-        Worker.all.assert_called_with(connection=connection)
+        Worker.all.assert_called_once_with()
 
         self.assertEqual(workers, [])
 
@@ -197,11 +191,9 @@ class GetWorkersStatsTestCase(unittest.TestCase):
 
         Worker.all.return_value = [worker_one, worker_two]
 
-        connection = Mock()
+        workers = get_workers_stats()
 
-        workers = get_workers_stats(connection)
-
-        Worker.all.assert_called_with(connection=connection)
+        Worker.all.assert_called_once_with()
 
         self.assertEqual(
             workers,
@@ -228,12 +220,10 @@ class GetQueueJobsTestCase(unittest.TestCase):
         """On Redis connection errors, exceptions subclasses of `RedisError` will be raised."""
         type(Queue.return_value).count = PropertyMock(side_effect=RedisError('Connection error'))
 
-        connection = Mock()
-
         with self.assertRaises(RedisError):
-            get_queue_jobs('queue_name', connection)
+            get_queue_jobs('queue_name')
 
-        Queue.assert_called_with('queue_name', connection=connection)
+        Queue.assert_called_once_with('queue_name')
 
     @patch('rq_exporter.utils.Queue')
     def test_get_queue_jobs_return_value(self, Queue):
@@ -247,7 +237,7 @@ class GetQueueJobsTestCase(unittest.TestCase):
 
         queue_jobs = get_queue_jobs('queue_name')
 
-        Queue.assert_called_with('queue_name', connection=None)
+        Queue.assert_called_once_with('queue_name')
 
         self.assertEqual(
             queue_jobs,
@@ -270,12 +260,10 @@ class GetJobsByQueueTestCase(unittest.TestCase):
         """On Redis connection errors, exceptions subclasses of `RedisError` will be raised."""
         Queue.all.side_effect = RedisError('Connection error')
 
-        connection = Mock()
-
         with self.assertRaises(RedisError):
-            get_jobs_by_queue(connection)
+            get_jobs_by_queue()
 
-        Queue.all.assert_called_with(connection=connection)
+        Queue.all.assert_called_once_with()
 
     @patch('rq_exporter.utils.Queue')
     def test_return_value_without_any_queues_available(self, Queue):
@@ -284,7 +272,7 @@ class GetJobsByQueueTestCase(unittest.TestCase):
 
         jobs = get_jobs_by_queue()
 
-        Queue.all.assert_called_with(connection=None)
+        Queue.all.assert_called_once_with()
         self.assertEqual(jobs, {})
 
     @patch('rq_exporter.utils.get_queue_jobs')
@@ -318,16 +306,11 @@ class GetJobsByQueueTestCase(unittest.TestCase):
 
         get_queue_jobs.side_effect = [q_default_jobs, q_high_jobs]
 
-        connection = Mock()
+        jobs = get_jobs_by_queue()
 
-        jobs = get_jobs_by_queue(connection)
+        Queue.all.assert_called_once_with()
 
-        Queue.all.assert_called_with(connection=connection)
-
-        get_queue_jobs.assert_has_calls([
-            call('default', connection),
-            call('high', connection)
-        ])
+        get_queue_jobs.assert_has_calls([call('default'), call('high')])
 
         self.assertEqual(
             jobs,
