@@ -1,5 +1,9 @@
 version: '3.7'
 
+volumes:
+  grafana_data:
+    driver: local
+
 services:
 
   rq_exporter:
@@ -45,3 +49,33 @@ services:
       - type: bind
         source: ./docker-compose/prometheus.yml
         target: /etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:6.7.3
+    ports:
+      - target: 3000
+        published: 3000
+        protocol: tcp
+        mode: host
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      # Grafana datasources
+      # https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources
+      - type: bind
+        source: ./docker-compose/grafana-datasources.yml
+        target: /etc/grafana/provisioning/datasources/datasources.yaml
+      # Grafana dashboards config
+      # https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+      - type: bind
+        source: ./docker-compose/grafana-dashboards.yml
+        target: /etc/grafana/provisioning/datasources/dashboards.yaml
+      # # RQ dashboard
+      # - type: bind
+      #   source: ./docker-compose/rq-dashboard.yml
+      #   target: /etc/grafana/dashboards/rq.yaml
+      # Grafana data
+      - type: volume
+        source: grafana_data
+        target: /var/lib/grafana
