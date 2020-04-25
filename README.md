@@ -2,7 +2,6 @@
 
 [![PyPI](https://img.shields.io/pypi/v/rq-exporter)](https://pypi.org/project/rq-exporter/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/rq-exporter)](https://pypi.org/project/rq-exporter/)
-[![PyPI - Wheel](https://img.shields.io/pypi/wheel/rq-exporter)](https://pypi.org/project/rq-exporter/)
 [![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/pypi/rq-exporter)](https://libraries.io/pypi/rq-exporter)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/mdawar/rq-exporter?sort=semver)](https://hub.docker.com/r/mdawar/rq-exporter)
 
@@ -15,7 +14,7 @@ Install the Python package:
 ```console
 $ # Install the latest version
 $ pip install rq-exporter
-$ # Install a specific version
+$ # Or you can install a specific version
 $ pip install rq-exporter==1.0.0
 ```
 
@@ -24,11 +23,11 @@ Or download the [Docker image](https://hub.docker.com/r/mdawar/rq-exporter):
 ```console
 $ # Pull the latest image
 $ docker pull mdawar/rq-exporter
-$ # Pull a specific version
+$ # Or you can pull a specific version
 $ docker pull mdawar/rq-exporter:v1.0.0
 ```
 
-The released versions are available as [Docker image tags](https://hub.docker.com/r/mdawar/rq-exporter/tags).
+The releases are available as [Docker image tags](https://hub.docker.com/r/mdawar/rq-exporter/tags).
 
 ## Usage
 
@@ -37,7 +36,7 @@ The released versions are available as [Docker image tags](https://hub.docker.co
 ```console
 $ # Run the exporter on port 8000
 $ rq-exporter
-$ # Run the exporter on a different port
+$ # You can specify a different port by passing the port number
 $ rq-exporter 8080
 ```
 
@@ -48,58 +47,62 @@ $ # Run the exporter and publish the port 8000 on the host
 $ docker run -it -p 8000:8000 rq-exporter
 $ # Use the -d option to run the container in the background (detached)
 $ docker run -d -p 8000:8000 rq-exporter
-$ # Override Gunicorn command line options
+$ # The Docker container by default serves the app using Gunicorn
 $ # All the command line arguments will be passed to gunicorn
+$ # To override the Gunicorn command line options
 $ docker run -it -p 8080:8080 rq-exporter -b 0.0.0.0:8080 --log-level debug --threads 2
-$ # Set environment variables using -e
+$ # To set environment variables use the -e option
 $ docker run -it -p 8000:8000 -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq-exporter
+```
+
+If you don't want to serve the application using **Gunicorn**, you can override the entrypoint:
+
+```console
+$ # Example of setting the entrypoint to rq-exporter
+$ docker run -it -p 8000:8000 --entrypoint rq-exporter rq-exporter
+$ # The command line arguments will be passed to rq-exporter
+$ docker run -it -p 8080:8080 --entrypoint rq-exporter rq-exporter 8080
 ```
 
 ## Exported Metrics
 
 **RQ Metrics:**
 
-* `rq_workers`: RQ workers
-
-    * **Type**: Gauge
-    * **Labels**: `name`, `queues`, `state`
-
-    Example:
-
-    ```
-    rq_workers{name="40d33ed9541644d79373765e661b7f38", queues="default", state="idle"} 1.0
-    rq_workers{name="fe9a433575e04685a53e4794b2eaeea9", queues="high,default,low", state="busy"} 1.0
-    ```
-
-* `rq_jobs`: RQ jobs by queue and status
-
-    * **Type**: Gauge
-    * **Labels**: `queue`, `status`
-
-    Example:
-
-    ```
-    rq_jobs{queue="default", status="queued"} 2.0
-    rq_jobs{queue="default", status="started"} 1.0
-    rq_jobs{queue="default", status="finished"} 5.0
-    rq_jobs{queue="default", status="failed"} 1.0
-    rq_jobs{queue="default", status="deferred"} 1.0
-    rq_jobs{queue="default", status="scheduled"} 2.0
-    ```
+Metric Name | Type | Labels | Description
+----------- | ---- | ------ | -----------
+`rq_workers` | Gauge | `name`, `queues`, `state` | RQ workers
+`rq_jobs` | Gauge | `queues`, `status` | RQ jobs by queue and status
 
 **Request processing metrics:**
 
-* `rq_request_processing_seconds_count`: Number of requests processed
+Metric Name | Type | Description
+----------- | ---- | -----------
+`rq_request_processing_seconds_count` | Summary | Number of requests processed (RQ data collected)
+`rq_request_processing_seconds_sum` | Summary | Total sum of time in seconds processing the requests
+`rq_request_processing_seconds_created` | Gauge | Time created at (`time.time()` return value)
 
-    * **Type**: Summary
+Example:
 
-* `rq_request_processing_seconds_sum`: Total sum of time in seconds processing the requests
-
-    * **Type**: Summary
-
-* `rq_request_processing_seconds_created`: Time created at (`time.time()` return value)
-
-    * **Type**: Gauge
+```bash
+# HELP rq_request_processing_seconds Time spent processing RQ stats
+# TYPE rq_request_processing_seconds summary
+rq_request_processing_seconds_count 1.0
+rq_request_processing_seconds_sum 0.029244607000009637
+# TYPE rq_request_processing_seconds_created gauge
+rq_request_processing_seconds_created 1.5878023726039658e+09
+# HELP rq_workers RQ workers
+# TYPE rq_workers gauge
+rq_workers{name="40d33ed9541644d79373765e661b7f38", queues="default", state="idle"} 1.0
+rq_workers{name="fe9a433575e04685a53e4794b2eaeea9", queues="high,default,low", state="busy"} 1.0
+# HELP rq_jobs RQ jobs by state
+# TYPE rq_jobs gauge
+rq_jobs{queue="default", status="queued"} 2.0
+rq_jobs{queue="default", status="started"} 1.0
+rq_jobs{queue="default", status="finished"} 5.0
+rq_jobs{queue="default", status="failed"} 1.0
+rq_jobs{queue="default", status="deferred"} 1.0
+rq_jobs{queue="default", status="scheduled"} 2.0
+```
 
 ## Configuration
 
@@ -171,7 +174,7 @@ $ # Install the requirements
 $ pip install -r requirements.txt
 $ # Run the exporter on port 8000
 $ python -m rq_exporter
-$ # Run the exporter on a different port
+$ # You can specify a different port by passing the port number
 $ python -m rq_exporter 8080
 ```
 
@@ -183,7 +186,7 @@ $ python -m unittest
 
 ## Contributing
 
-1. Fork the repository
+1. Fork the [repository](https://github.com/mdawar/rq-exporter)
 2. Clone the forked repository `git clone <URL>`
 3. Create a new feature branch `git checkout -b <BRANCH_NAME>`
 4. Make changes and add tests if needed and commit your changes `git commit -am "Your commit message"`
