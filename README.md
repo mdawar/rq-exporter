@@ -66,7 +66,7 @@ $ docker run -it -p 8080:8080 --entrypoint rq-exporter rq-exporter 8080
 
 ## Exported Metrics
 
-**RQ Metrics:**
+**RQ metrics:**
 
 Metric Name | Type | Labels | Description
 ----------- | ---- | ------ | -----------
@@ -108,21 +108,21 @@ rq_jobs{queue="default", status="scheduled"} 2.0
 
 Environment variables:
 
-`RQ_REDIS_URL`: Redis URL in the form `redis://:[password]@[host]:[port]/[db]`
+Variable Name | Default Value | Description
+------------- | ------------- | -----------
+`RQ_REDIS_URL` | `None` | Redis URL in the form `redis://:[password]@[host]:[port]/[db]`
+`RQ_REDIS_HOST` | `localhost` | Redis host name
+`RQ_REDIS_PORT` | `6379` | Redis port number
+`RQ_REDIS_DB` | `0` | Redis database number
+`RQ_REDIS_PASS` | `None` | Redis password
+`RQ_REDIS_PASS_FILE` | `None` |  Redis password file path (e.g. Path of a mounted Docker secret)
+`RQ_EXPORTER_LOG_LEVEL` | `INFO` | Logging level
 
-Or you can use these variables instead:
+**Note**:
 
-* `RQ_REDIS_HOST`: Redis host name (default: `localhost`)
-* `RQ_REDIS_PORT`: Redis port number (default: `6379`)
-* `RQ_REDIS_DB`: Redis database number (default: `0`)
-* `RQ_REDIS_PASS`: Redis password (default: `None`)
-* `RQ_REDIS_PASS_FILE`: Redis password file (e.g. Path of a mounted Docker secret)
-
-**Note**: When `RQ_REDIS_PASS_FILE` is set `RQ_REDIS_PASS` will be ignored.
-
-`RQ_EXPORTER_LOG_LEVEL`: Logging level (default: `INFO`), only used when executing the package `python -m rq_exporter`
-
-When using **Gunicorn** the level will be set from its logger, you can pass the logging level using the `--log-level` option.
+* When `RQ_REDIS_URL` is set the other Redis options will be ignored
+* When `RQ_REDIS_PASS_FILE` is set, `RQ_REDIS_PASS` will be ignored
+* When using **Gunicorn** you need to set the logging level using the `--log-level` option
 
 ## Using With Gunicorn
 
