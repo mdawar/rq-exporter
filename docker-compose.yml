@@ -31,4 +31,17 @@ services:
       - redis-server
       - --bind 0.0.0.0
       - --requirepass 123456
-      - --loglevel debug
+      - --loglevel notice
+
+  prometheus:
+    image: prom/prometheus:v2.17.2
+    ports:
+      - target: 9090
+        published: 9090
+        protocol: tcp
+        mode: host
+    volumes:
+      # Prometheus config file
+      - type: bind
+        source: ./docker-compose/prometheus.yml
+        target: /etc/prometheus/prometheus.yml
