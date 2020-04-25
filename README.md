@@ -71,7 +71,7 @@ $ docker run -it -p 8080:8080 --entrypoint rq-exporter rq-exporter 8080
 Metric Name | Type | Labels | Description
 ----------- | ---- | ------ | -----------
 `rq_workers` | Gauge | `name`, `queues`, `state` | RQ workers
-`rq_jobs` | Gauge | `queues`, `status` | RQ jobs by queue and status
+`rq_jobs` | Gauge | `queue`, `status` | RQ jobs by queue and status
 
 **Request processing metrics:**
 
@@ -177,6 +177,17 @@ $ python -m rq_exporter
 $ # You can specify a different port by passing the port number
 $ python -m rq_exporter 8080
 ```
+
+To start a full development environment with **RQ** workers, **Prometheus** and **Grafana**:
+
+```console
+$ docker-compose up
+$ # If you want to start multiple workers use the --compatibility flag
+$ # which will make docker-compose read the `deploy` section and start multiple replicas
+$ docker-compose --compatibility up
+```
+
+If you don't have `docker-compose` installed follow the [installation](https://docs.docker.com/compose/install/) instructions on the official website.
 
 ## Running the Tests
 
