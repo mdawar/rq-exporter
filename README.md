@@ -165,7 +165,31 @@ Check out the `docker-compose.yml` file for usage example.
 
 ## Development
 
+To start a full development environment with **RQ** workers, **Prometheus** and **Grafana**:
+
 ```console
+$ docker-compose up
+$ # If you want to start multiple workers use the --compatibility flag
+$ # which will make docker-compose read the `deploy` section and start multiple replicas
+$ docker-compose --compatibility up
+```
+
+You can access the services on these ports on your local machine:
+
+- **RQ exporter**: `8000`
+- **Redis**: `6379`
+- **Prometheus**: `9090`
+- **Grafana**: `3000` (Login using `admin:admin`)
+
+**Note**: If you don't have `docker-compose` installed follow the [installation](https://docs.docker.com/compose/install/) instructions on the official website.
+
+If you want to use the package manually:
+
+```console
+$ # Clone the repository
+$ git clone <REPO_URL>
+$ # Change to the project directory
+$ cd rq-exporter
 $ # Create a new virtualenv
 $ python -m venv /path/to/env
 $ # Activate the environment
@@ -177,17 +201,6 @@ $ python -m rq_exporter
 $ # You can specify a different port by passing the port number
 $ python -m rq_exporter 8080
 ```
-
-To start a full development environment with **RQ** workers, **Prometheus** and **Grafana**:
-
-```console
-$ docker-compose up
-$ # If you want to start multiple workers use the --compatibility flag
-$ # which will make docker-compose read the `deploy` section and start multiple replicas
-$ docker-compose --compatibility up
-```
-
-If you don't have `docker-compose` installed follow the [installation](https://docs.docker.com/compose/install/) instructions on the official website.
 
 ## Running the Tests
 
