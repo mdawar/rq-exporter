@@ -21,6 +21,11 @@ services:
     environment:
       RQ_REDIS_HOST: "redis"
       RQ_REDIS_PASS: "123456"
+    volumes:
+      # Mount the package for development
+      - type: bind
+        source: ./rq_exporter
+        target: /app/rq_exporter
     depends_on:
       - redis
 
