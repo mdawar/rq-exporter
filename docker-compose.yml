@@ -37,6 +37,43 @@ services:
       - --requirepass 123456
       - --loglevel notice
 
+  # RQ workers
+  # To run multiple replicas use:
+  # docker-compose --compatibility up
+  worker:
+    image: rq-exporter:latest
+    entrypoint: []
+    command: rq worker high default low --url redis://:123456@redis:6379/0
+    working_dir: /home/worker
+    volumes:
+      # Mount a sample project
+      - type: bind
+        source: ./docker-compose/project
+        target: /home/worker
+    depends_on:
+      - redis
+      - rq_exporter
+    deploy:
+      replicas: 2
+
+  # Enqueue jobs for testing
+  enqueue:
+    image: rq-exporter:latest
+    entrypoint: []
+    command: python -u enqueue.py
+    environment:
+      RQ_REDIS_HOST: "redis"
+      RQ_REDIS_PASS: "123456"
+    working_dir: /home/enqueue
+    volumes:
+      # Mount a sample project
+      - type: bind
+        source: ./docker-compose/project
+        target: /home/enqueue
+    depends_on:
+      - redis
+      - rq_exporter
+
   prometheus:
     image: prom/prometheus:v2.17.2
     ports:
