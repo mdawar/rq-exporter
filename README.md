@@ -181,6 +181,16 @@ You can access the services on these ports on your local machine:
 - **Prometheus**: `9090`
 - **Grafana**: `3000` (Login using `admin:admin`)
 
+To run more workers and enqueue more jobs you can scale the `worker` and `enqueue` services:
+
+```console
+$ # Run 5 workers
+$ docker-compose up -d --scale worker=5
+$ # Enqueue more jobs
+$ # Scale the enqueue service and the workers
+$ docker-compose up -d --scale worker=5 --scale enqueue=2
+```
+
 **Note**: If you don't have `docker-compose` installed follow the [installation](https://docs.docker.com/compose/install/) instructions on the official website.
 
 If you want to use the package manually:
