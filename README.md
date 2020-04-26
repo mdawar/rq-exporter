@@ -191,6 +191,13 @@ $ # Scale the enqueue service and the workers
 $ docker-compose up -d --scale worker=5 --scale enqueue=2
 ```
 
+To cleanup after development:
+
+```console
+$ # Use -v to remove volumes
+$ docker-compose down -v
+```
+
 **Note**: If you don't have `docker-compose` installed follow the [installation](https://docs.docker.com/compose/install/) instructions on the official website.
 
 If you want to use the package manually:
