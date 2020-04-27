@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1587974164957,
+  "iteration": 1587988326319,
   "links": [],
   "panels": [
     {
@@ -56,7 +56,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 8,
+        "h": 4,
         "w": 4,
         "x": 0,
         "y": 1
@@ -138,7 +138,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 10,
+        "w": 11,
         "x": 4,
         "y": 1
       },
@@ -241,8 +241,8 @@
       "fontSize": "100%",
       "gridPos": {
         "h": 8,
-        "w": 10,
-        "x": 14,
+        "w": 9,
+        "x": 15,
         "y": 1
       },
       "id": 6,
@@ -429,6 +429,98 @@
       "title": "Current Jobs Overview",
       "transform": "table",
       "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorPostfix": false,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "Prometheus",
+      "decimals": null,
+      "description": "The average time the exporter took to query the Redis instance for the RQ workers and jobs data.",
+      "format": "s",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 5
+      },
+      "id": 29,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "pluginVersion": "6.7.3",
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": true,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "rate(rq_request_processing_seconds_sum[$__range]) /rate(rq_request_processing_seconds_count[$__range])",
+          "format": "time_series",
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "0.5,1",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Avg. data collection duration",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "0",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
     },
     {
       "collapsed": false,
