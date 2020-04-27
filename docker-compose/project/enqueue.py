@@ -22,7 +22,7 @@ def main():
 
         print(f'Enqueuing job "{job.__name__}" on queue "{queue.name}"')
 
-        queue.enqueue(job, random.randint(2, 10))
+        queue.enqueue_call(job, args=[random.randint(2, 10)])
 
         time.sleep(random.randint(2, 10))
 
