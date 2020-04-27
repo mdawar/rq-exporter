@@ -113,7 +113,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "RQ Workers",
+      "title": "RQ workers",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -197,7 +197,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Workers Capacity",
+      "title": "Workers capacity",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -262,7 +262,7 @@
           "type": "hidden"
         },
         {
-          "alias": "Queue Name",
+          "alias": "Queue name",
           "colorMode": null,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
@@ -426,7 +426,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Current Jobs Overview",
+      "title": "Current jobs overview",
       "transform": "table",
       "type": "table"
     },
