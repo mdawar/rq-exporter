@@ -21,4 +21,4 @@ USER exporter
 
 ENTRYPOINT ["gunicorn", "rq_exporter:create_app()"]
 
-CMD ["-b", "0.0.0.0:8000", "--threads", "2", "--log-level", "info", "--keep-alive", "3"]
+CMD ["-b", "0.0.0.0:9726", "--threads", "2", "--log-level", "info", "--keep-alive", "3"]

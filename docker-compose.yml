@@ -14,8 +14,8 @@ services:
     # Override Gunicorn command line options
     # command: "-b 0.0.0.0:8080 --threads 2 --log-level debug"
     ports:
-      - target: 8000
-        published: 8000
+      - target: 9726
+        published: 9726
         protocol: tcp
         mode: host
     environment:

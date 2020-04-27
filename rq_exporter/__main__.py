@@ -42,7 +42,7 @@ def main():
     signal.signal(signal.SIGTERM, signal_handler)
 
 
-    PORT = 8000
+    PORT = 9726
 
     if len(sys.argv) > 1:
         arg = sys.argv[1]

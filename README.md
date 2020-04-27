@@ -36,7 +36,7 @@ The releases are available as [Docker image tags](https://hub.docker.com/r/mdawa
 **Python package**:
 
 ```console
-$ # Run the exporter on port 8000
+$ # Run the exporter on port 9726
 $ rq-exporter
 $ # You can specify a different port by passing the port number
 $ rq-exporter 8080
@@ -45,23 +45,23 @@ $ rq-exporter 8080
 **Docker image**:
 
 ```console
-$ # Run the exporter and publish the port 8000 on the host
-$ docker run -it -p 8000:8000 rq-exporter
+$ # Run the exporter and publish the port 9726 on the host
+$ docker run -it -p 9726:9726 rq-exporter
 $ # Use the -d option to run the container in the background (detached)
-$ docker run -d -p 8000:8000 rq-exporter
+$ docker run -d -p 9726:9726 rq-exporter
 $ # The Docker container by default serves the app using Gunicorn
 $ # All the command line arguments will be passed to gunicorn
 $ # To override the Gunicorn command line options
 $ docker run -it -p 8080:8080 rq-exporter -b 0.0.0.0:8080 --log-level debug --threads 2
 $ # To set environment variables use the -e option
-$ docker run -it -p 8000:8000 -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq-exporter
+$ docker run -it -p 9726:9726 -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq-exporter
 ```
 
 If you don't want to serve the application using **Gunicorn**, you can override the entrypoint:
 
 ```console
 $ # Example of setting the entrypoint to rq-exporter
-$ docker run -it -p 8000:8000 --entrypoint rq-exporter rq-exporter
+$ docker run -it -p 9726:9726 --entrypoint rq-exporter rq-exporter
 $ # The command line arguments will be passed to rq-exporter
 $ docker run -it -p 8080:8080 --entrypoint rq-exporter rq-exporter 8080
 ```
@@ -143,7 +143,7 @@ Variable Name | Default Value | Description
 The WSGI application can be created using the `rq_exporter.create_app()` function:
 
 ```console
-$ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:8000 --log-level info
+$ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:9726 --log-level info
 ```
 
 **Note about concurrency**:
@@ -159,7 +159,7 @@ This is fine if you don't care about these metrics, these are only for measuring
 But you can still use multiple threads with 1 worker process to handle multiple concurrent requests:
 
 ```console
-$ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:8000 --threads 2
+$ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:9726 --threads 2
 ```
 
 ## Building the Docker Image
@@ -190,7 +190,7 @@ $ docker-compose --compatibility up
 
 You can access the services on these ports on your local machine:
 
-- **RQ exporter**: `8000`
+- **RQ exporter**: `9726`
 - **Redis**: `6379`
 - **RQ Dashboard**: `9181`
 - **Prometheus**: `9090`
@@ -235,7 +235,7 @@ $ # Activate the environment
 $ source /path/to/env/bin/activate
 $ # Install the requirements
 $ pip install -r requirements.txt
-$ # Run the exporter on port 8000
+$ # Run the exporter on port 9726
 $ python -m rq_exporter
 $ # You can specify a different port by passing the port number
 $ python -m rq_exporter 8080
