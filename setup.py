@@ -41,7 +41,7 @@ setup(
         'Intended Audience :: System Administrators',
         'Topic :: System :: Monitoring'
     ],
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     entry_points = {
         'console_scripts': ['rq-exporter = rq_exporter.__main__:main']
     }
