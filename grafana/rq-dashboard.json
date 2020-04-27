@@ -1,7 +1,50 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.7.3"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
+        "$$hashKey": "object:13",
         "builtIn": 1,
         "datasource": "-- Grafana --",
         "enable": true,
@@ -12,12 +55,12 @@
       }
     ]
   },
-  "description": "Dashboard for RQ Prometheus Exporter",
+  "description": "Dashboard for Python RQ Prometheus Exporter",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1587988326319,
+  "id": null,
+  "iteration": 1587990213889,
   "links": [],
   "panels": [
     {
@@ -45,7 +88,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": null,
       "format": "none",
       "gauge": {
@@ -133,7 +176,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -237,7 +280,7 @@
     },
     {
       "columns": [],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "fontSize": "100%",
       "gridPos": {
         "h": 8,
@@ -255,6 +298,7 @@
       },
       "styles": [
         {
+          "$$hashKey": "object:275",
           "alias": "Time",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "link": false,
@@ -262,7 +306,8 @@
           "type": "hidden"
         },
         {
-          "alias": "Queue name",
+          "$$hashKey": "object:276",
+          "alias": "Queue Name",
           "colorMode": null,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
@@ -278,6 +323,7 @@
           "unit": "short"
         },
         {
+          "$$hashKey": "object:277",
           "alias": "Queued",
           "colorMode": null,
           "colors": [
@@ -294,6 +340,7 @@
           "unit": "short"
         },
         {
+          "$$hashKey": "object:278",
           "alias": "Started",
           "colorMode": null,
           "colors": [
@@ -310,6 +357,7 @@
           "unit": "short"
         },
         {
+          "$$hashKey": "object:279",
           "alias": "Finished",
           "colorMode": null,
           "colors": [
@@ -326,6 +374,7 @@
           "unit": "short"
         },
         {
+          "$$hashKey": "object:280",
           "alias": "Failed",
           "colorMode": null,
           "colors": [
@@ -342,6 +391,7 @@
           "unit": "short"
         },
         {
+          "$$hashKey": "object:281",
           "alias": "Deferred",
           "colorMode": null,
           "colors": [
@@ -358,6 +408,7 @@
           "unit": "short"
         },
         {
+          "$$hashKey": "object:282",
           "alias": "Scheduled",
           "colorMode": null,
           "colors": [
@@ -441,7 +492,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": null,
       "description": "The average time the exporter took to query the Redis instance for the RQ workers and jobs data.",
       "format": "s",
@@ -546,7 +597,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "description": "This percentage reflects the number of jobs currently queued, an optimal value is a value near or equal to 0% which means the jobs are being picked up by the workers without delays.\n\nA high percentage of queued jobs means that you need to add more workers as the current workers are not able to process all the jobs in a timely manner.",
       "format": "percentunit",
@@ -635,7 +686,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#299c46"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "description": "",
       "format": "percentunit",
@@ -724,7 +775,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#299c46"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "format": "percentunit",
       "gauge": {
@@ -746,10 +797,12 @@
       "mappingType": 1,
       "mappingTypes": [
         {
+          "$$hashKey": "object:1347",
           "name": "value to text",
           "value": 1
         },
         {
+          "$$hashKey": "object:1348",
           "name": "range to text",
           "value": 2
         }
@@ -795,6 +848,7 @@
       "valueFontSize": "80%",
       "valueMaps": [
         {
+          "$$hashKey": "object:1350",
           "op": "=",
           "text": "N/A",
           "value": "null"
@@ -812,7 +866,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "description": "The percentage of failed jobs will always be higher if you are using the default failure TTL  which is 1 year and you don't re-queue the jobs.\n\nIf you don't intend to re-queue the jobs you should set a lower failure TTL.",
       "format": "percentunit",
@@ -907,7 +961,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "format": "percentunit",
       "gauge": {
@@ -995,7 +1049,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#299c46"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "format": "percentunit",
       "gauge": {
@@ -1078,7 +1132,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "description": "",
       "fill": 1,
@@ -1176,7 +1230,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1286,7 +1340,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "fill": 1,
       "fillGradient": 0,
@@ -1383,7 +1437,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1493,7 +1547,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "description": "",
       "fill": 1,
@@ -1591,7 +1645,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1696,7 +1750,8 @@
     "list": [
       {
         "allValue": null,
-        "datasource": "Prometheus",
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
         "definition": "label_values({__name__=~\"rq_.*\"}, job)",
         "hide": 0,
         "includeAll": false,
@@ -1718,7 +1773,8 @@
       },
       {
         "allValue": null,
-        "datasource": "Prometheus",
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
         "definition": "label_values({__name__=~\"rq_.*\"}, instance)",
         "hide": 0,
         "includeAll": false,
