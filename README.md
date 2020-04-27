@@ -7,6 +7,8 @@
 
 Prometheus metrics exporter Python RQ (Redis Queue) job queue library.
 
+[![Grafana dashboard](https://grafana.com/api/dashboards/12196/images/8017/image)](https://grafana.com/grafana/dashboards/12196)
+
 ## Installation
 
 Install the Python package:
@@ -63,6 +65,18 @@ $ docker run -it -p 8000:8000 --entrypoint rq-exporter rq-exporter
 $ # The command line arguments will be passed to rq-exporter
 $ docker run -it -p 8080:8080 --entrypoint rq-exporter rq-exporter 8080
 ```
+
+## Grafana Dashboard
+
+An example [**Grafana** dashboard](https://grafana.com/grafana/dashboards/12196) is available with the ID `12196` for showcasing this exporter's metrics.
+
+You can also find the [JSON file of the dashboard](https://github.com/mdawar/rq-exporter/tree/master/grafana/rq-dashboard.json) in this repository.
+
+**Note**:
+
+- This is just an example dashboard, feel free to use it as a base for your custom dashboard
+- You need to adjust the color thresholds to suit your needs for the job status percentage *singlestat* panels
+- Some panels might seem duplicated providing percentages and current values, these are just for showcasing the PromQL queries
 
 ## Exported Metrics
 
