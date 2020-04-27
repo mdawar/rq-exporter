@@ -112,11 +112,11 @@ services:
       # https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
       - type: bind
         source: ./docker-compose/grafana-dashboards.yml
-        target: /etc/grafana/provisioning/datasources/dashboards.yaml
+        target: /etc/grafana/provisioning/dashboards/dashboards.yaml
       # # RQ dashboard
-      # - type: bind
-      #   source: ./docker-compose/rq-dashboard.yml
-      #   target: /etc/grafana/dashboards/rq.yaml
+      - type: bind
+        source: ./grafana/rq-dashboard.json
+        target: /etc/grafana/dashboards/rq-dashboard.json
       # Grafana data
       - type: volume
         source: grafana_data
