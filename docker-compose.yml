@@ -79,6 +79,19 @@ services:
       - redis
       - rq_exporter
 
+  # RQ dashboard
+  # https://github.com/Parallels/rq-dashboard
+  dashboard:
+    image: eoranged/rq-dashboard
+    command: -u redis://:123456@redis:6379/0
+    ports:
+      - target: 9181
+        published: 9181
+        protocol: tcp
+        mode: host
+    depends_on:
+      - redis
+
   prometheus:
     image: prom/prometheus:v2.17.2
     ports:

@@ -178,6 +178,7 @@ You can access the services on these ports on your local machine:
 
 - **RQ exporter**: `8000`
 - **Redis**: `6379`
+- **RQ Dashboard**: `9181`
 - **Prometheus**: `9090`
 - **Grafana**: `3000` (Login using `admin:admin`)
 
