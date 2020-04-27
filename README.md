@@ -181,6 +181,13 @@ You can access the services on these ports on your local machine:
 - **Prometheus**: `9090`
 - **Grafana**: `3000` (Login using `admin:admin`)
 
+You can specify the services that you want to start by their name in the `docker-compose.yml` file:
+
+```console
+$ # Example starting only the `rq_exporter` and `redis` services
+$ docker-compose up rq_exporter redis
+```
+
 To run more workers and enqueue more jobs you can scale the `worker` and `enqueue` services:
 
 ```console
