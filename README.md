@@ -121,6 +121,8 @@ Variable Name | Default Value | Description
 `RQ_REDIS_PASS` | `None` | Redis password
 `RQ_REDIS_PASS_FILE` | `None` |  Redis password file path (e.g. Path of a mounted Docker secret)
 `RQ_EXPORTER_LOG_LEVEL` | `INFO` | Logging level
+`RQ_EXPORTER_LOG_FORMAT` | `[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s` | Logging handler format string
+`RQ_EXPORTER_LOG_DATEFMT` | `%Y-%m-%d %H:%M:%S` | Logging date/time format string
 
 **Note**:
 
