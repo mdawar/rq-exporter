@@ -59,3 +59,5 @@ class RQCollector(object):
                         rq_jobs.add_metric([queue_name, status], count)
 
                 yield rq_jobs
+
+        logger.debug('RQ metrics collection finished')
