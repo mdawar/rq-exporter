@@ -49,21 +49,11 @@ $ # Run the exporter and publish the port 9726 on the host
 $ docker run -it -p 9726:9726 rq-exporter
 $ # Use the -d option to run the container in the background (detached)
 $ docker run -d -p 9726:9726 rq-exporter
-$ # The Docker container by default serves the app using Gunicorn
-$ # All the command line arguments will be passed to gunicorn
-$ # To override the Gunicorn command line options
-$ docker run -it -p 8080:8080 rq-exporter -b 0.0.0.0:8080 --log-level debug --threads 2
+$ # All the command line arguments will be passed to rq-exporter
+$ # So you can change the exporter port
+$ docker run -it -p 8080:8080 rq-exporter 8080
 $ # To set environment variables use the -e option
 $ docker run -it -p 9726:9726 -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq-exporter
-```
-
-If you don't want to serve the application using **Gunicorn**, you can override the entrypoint:
-
-```console
-$ # Example of setting the entrypoint to rq-exporter
-$ docker run -it -p 9726:9726 --entrypoint rq-exporter rq-exporter
-$ # The command line arguments will be passed to rq-exporter
-$ docker run -it -p 8080:8080 --entrypoint rq-exporter rq-exporter 8080
 ```
 
 ## Grafana Dashboard
@@ -136,14 +126,29 @@ Variable Name | Default Value | Description
 
 * When `RQ_REDIS_URL` is set the other Redis options will be ignored
 * When `RQ_REDIS_PASS_FILE` is set, `RQ_REDIS_PASS` will be ignored
-* When using **Gunicorn** you need to set the logging level using the `--log-level` option
 
-## Using With Gunicorn
+## Serving with Gunicorn
 
 The WSGI application can be created using the `rq_exporter.create_app()` function:
 
 ```console
 $ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:9726 --log-level info
+```
+
+Example [`Dockerfile`](https://github.com/mdawar/rq-exporter/blob/master/Dockerfile.gunicorn) to create a **Docker** image to serve the application with **Gunicorn**
+
+```dockerfile
+FROM mdawar/rq-exporter:latest
+
+USER root
+
+RUN pip install --no-cache-dir gunicorn
+
+USER exporter
+
+ENTRYPOINT ["gunicorn", "rq_exporter:create_app()"]
+
+CMD ["-b", "0.0.0.0:9726", "--threads", "2", "--log-level", "info", "--keep-alive", "3"]
 ```
 
 **Note about concurrency**:

@@ -10,9 +10,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: rq-exporter:latest
-    # Override Gunicorn command line options
-    # command: "-b 0.0.0.0:8080 --threads 2 --log-level debug"
+    image: mdawar/rq-exporter:latest
+    # To change the exporter port
+    # command: 8080
     ports:
       - target: 9726
         published: 9726
@@ -46,7 +46,7 @@ services:
   # To run multiple replicas use:
   # docker-compose --compatibility up
   worker:
-    image: rq-exporter:latest
+    image: mdawar/rq-exporter:latest
     entrypoint: []
     command: rq worker high default low --url redis://:123456@redis:6379/0
     working_dir: /home/worker
@@ -63,7 +63,7 @@ services:
 
   # Enqueue jobs for testing
   enqueue:
-    image: rq-exporter:latest
+    image: mdawar/rq-exporter:latest
     entrypoint: []
     command: python -u enqueue.py
     environment:

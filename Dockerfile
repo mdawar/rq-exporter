@@ -11,14 +11,11 @@ WORKDIR /app
 
 COPY requirements.txt /app
 
-RUN pip install --no-cache-dir -r /app/requirements.txt \
-    && pip install --no-cache-dir gunicorn
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy the build context (defined in .dockerignore)
 COPY . /app
 
 USER exporter
 
-ENTRYPOINT ["gunicorn", "rq_exporter:create_app()"]
-
-CMD ["-b", "0.0.0.0:9726", "--threads", "2", "--log-level", "info", "--keep-alive", "3"]
+ENTRYPOINT ["python", "-m", "rq_exporter"]
