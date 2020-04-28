@@ -5,11 +5,17 @@ Register the RQ collector and create the WSGI application instance.
 
 """
 
+import logging
+
 from prometheus_client import make_wsgi_app
 from prometheus_client.core import REGISTRY
 
 from .collector import RQCollector
 from .utils import get_redis_connection
+from . import config
+
+
+logger = logging.getLogger(__name__)
 
 
 def register_collector():
@@ -42,6 +48,16 @@ def create_app():
         function: WSGI application function.
 
     """
+    logging.basicConfig(
+        format = config.LOG_FORMAT,
+        datefmt = config.LOG_DATEFMT,
+        level = config.LOG_LEVEL
+    )
+
+    logger.debug('Registering the RQ collector...')
+
     register_collector()
+
+    logger.debug('RQ collector registered')
 
     return make_wsgi_app()
