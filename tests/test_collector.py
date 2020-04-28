@@ -46,6 +46,15 @@ class RQCollectorTestCase(unittest.TestCase):
         # On cleanup call patch.stopall
         self.addCleanup(patch.stopall)
 
+    def test_multiple_instances_raise_ValueError(self, get_workers_stats, get_jobs_by_queue):
+        """Creating multiple instances of `RQCollector` registers duplicate summary metric in the registry."""
+        RQCollector()
+
+        with self.assertRaises(ValueError) as error:
+            RQCollector()
+
+        self.assertTrue('Duplicated timeseries in CollectorRegistry' in str(error.exception))
+
     def test_summary_metric(self, get_workers_stats, get_jobs_by_queue):
         """Test the summary metric that tracks the requests count and time."""
         collector = RQCollector()
