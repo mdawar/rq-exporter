@@ -5,7 +5,7 @@
 [![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/pypi/rq-exporter)](https://libraries.io/pypi/rq-exporter)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/mdawar/rq-exporter?sort=semver)](https://hub.docker.com/r/mdawar/rq-exporter)
 
-Prometheus metrics exporter Python RQ (Redis Queue) job queue library.
+Prometheus metrics exporter for Python RQ (Redis Queue) job queue library.
 
 [![Grafana dashboard](https://grafana.com/api/dashboards/12196/images/8017/image)](https://grafana.com/grafana/dashboards/12196)
 
@@ -36,10 +36,17 @@ The releases are available as [Docker image tags](https://hub.docker.com/r/mdawa
 **Python package**:
 
 ```console
-$ # Run the exporter on port 9726
+$ # Start the exporter on port 9726
 $ rq-exporter
-$ # You can specify a different port by passing the port number
-$ rq-exporter 8080
+$ # Start the exporter on a specific port and host (Default: 0.0.0.0:9726)
+$ rq-exporter --host localhost --port 8080
+$ # By default the exporter will connect to Redis on `localhost` port `6379`
+$ # You can specify a Redis URL
+$ rq-exporter --redis-url redis://:123456@redis_host:6379/0
+$ # Or specific Redis options (host, port, db, password)
+$ rq-exporter --redis-host 192.168.1.10 --redis-port 6380 --redis-pass 123456 --redis-db 1
+$ # You can also specify a password file path (eg: mounted Docker secret)
+$ rq-exporter --redis-pass-file /run/secrets/redis_pass
 ```
 
 **Docker image**:
@@ -50,9 +57,8 @@ $ docker run -it -p 9726:9726 rq-exporter
 $ # Use the -d option to run the container in the background (detached)
 $ docker run -d -p 9726:9726 rq-exporter
 $ # All the command line arguments will be passed to rq-exporter
-$ # So you can change the exporter port
-$ docker run -it -p 8080:8080 rq-exporter 8080
-$ # To set environment variables use the -e option
+$ docker run -it -p 9726:9726 rq-exporter --redis-host redis --redis-pass 123456
+$ # You can also configure the exporter using environment variables
 $ docker run -it -p 9726:9726 -e RQ_REDIS_HOST=redis -e RQ_REDIS_PASS=123456 rq-exporter
 ```
 
@@ -110,24 +116,26 @@ rq_jobs{queue="default", status="scheduled"} 2.0
 
 ## Configuration
 
-Environment variables:
+You can configure the exporter using command line arguments or environment variables:
 
-Variable Name | Default Value | Description
-------------- | ------------- | -----------
-`RQ_REDIS_URL` | `None` | Redis URL in the form `redis://:[password]@[host]:[port]/[db]`
-`RQ_REDIS_HOST` | `localhost` | Redis host name
-`RQ_REDIS_PORT` | `6379` | Redis port number
-`RQ_REDIS_DB` | `0` | Redis database number
-`RQ_REDIS_PASS` | `None` | Redis password
-`RQ_REDIS_PASS_FILE` | `None` |  Redis password file path (e.g. Path of a mounted Docker secret)
-`RQ_EXPORTER_LOG_LEVEL` | `INFO` | Logging level
-`RQ_EXPORTER_LOG_FORMAT` | `[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s` | Logging handler format string
-`RQ_EXPORTER_LOG_DATEFMT` | `%Y-%m-%d %H:%M:%S` | Logging date/time format string
+CLI Argument | Env Variable | Default Value | Description
+------------ | ------------ | ------------- | -----------
+`--host` | `RQ_EXPORTER_HOST` | `0.0.0.0` | Serve the exporter on this host
+`-p`, `--port` | `RQ_EXPORTER_PORT` | `9726` | Serve the exporter on this port
+`--redis-url` | `RQ_REDIS_URL` | `None` | Redis URL in the form `redis://:[password]@[host]:[port]/[db]`
+`--redis-host` | `RQ_REDIS_HOST` | `localhost` | Redis host name
+`--redis-port` | `RQ_REDIS_PORT` | `6379` | Redis port number
+`--redis-db` | `RQ_REDIS_DB` | `0` | Redis database number
+`--redis-pass` | `RQ_REDIS_PASS` | `None` | Redis password
+`--redis-pass-file` | `RQ_REDIS_PASS_FILE` | `None` |  Redis password file path (e.g. Path of a mounted Docker secret)
+`--log-level` | `RQ_EXPORTER_LOG_LEVEL` | `INFO` | Logging level
+`--log-format` | `RQ_EXPORTER_LOG_FORMAT` | `[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s` | Logging handler format string
+`--log-datefmt` | `RQ_EXPORTER_LOG_DATEFMT` | `%Y-%m-%d %H:%M:%S` | Logging date/time format string
 
 **Note**:
 
-* When `RQ_REDIS_URL` is set the other Redis options will be ignored
-* When `RQ_REDIS_PASS_FILE` is set, `RQ_REDIS_PASS` will be ignored
+* When Redis URL is set using `--redis-url` or `RQ_REDIS_URL` the other Redis options will be ignored
+* When the Redis password is set using `--redis-pass-file` or `RQ_REDIS_PASS_FILE`, then `--redis-pass` and `RQ_REDIS_PASS` will be ignored
 
 ## Serving with Gunicorn
 
@@ -242,10 +250,10 @@ $ # Activate the environment
 $ source /path/to/env/bin/activate
 $ # Install the requirements
 $ pip install -r requirements.txt
-$ # Run the exporter on port 9726
+$ # Start the exporter on port 9726
 $ python -m rq_exporter
-$ # You can specify a different port by passing the port number
-$ python -m rq_exporter 8080
+$ # You can configure the exporter using command line arguments
+$ python -m rq_exporter --port 8080
 ```
 
 ## Running the Tests
