@@ -11,8 +11,8 @@ services:
       context: .
       dockerfile: Dockerfile
     image: mdawar/rq-exporter:latest
-    # To change the exporter port
-    # command: 8080
+    # You can also configure the exporter using command line options
+    # command: --redis-host redis --redis-pass 123456
     ports:
       - target: 9726
         published: 9726
