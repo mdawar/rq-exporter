@@ -31,6 +31,13 @@ def register_collector():
 def create_app():
     """Create a WSGI application.
 
+    Register the `RQCollector` instance and then return a WSGI application.
+    This function is suitable for use by WSGI servers like Gunicorn to load
+    the WSGI application.
+
+    Example:
+        gunicorn "rq_exporter:create_app()"
+
     Returns:
         function: WSGI application function.
 
