@@ -10,27 +10,17 @@ import rq
 from rq.job import JobStatus
 from redis.exceptions import RedisError
 
-from rq_exporter import config
 from rq_exporter.utils import get_redis_connection, get_workers_stats, get_queue_jobs, get_jobs_by_queue
 
 
 class GetRedisConnectionTestCase(unittest.TestCase):
     """Tests for the `get_redis_connection` function."""
 
-    @patch.multiple(
-        config,
-        REDIS_URL = 'redis://',
-        REDIS_HOST = 'redis_host',
-        REDIS_PORT = '6363',
-        REDIS_DB = '1',
-        REDIS_PASS = '123456',
-        REDIS_PASS_FILE = '/run/secrets/redis_pass'
-    )
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_from_url(self):
-        """When `config.REDIS_URL` is set connection must be created with `Redis.from_url`."""
+        """When the `url` argument is passed the connection must be created with `Redis.from_url`."""
         with patch('rq_exporter.utils.Redis') as Redis:
-            connection = get_redis_connection()
+            connection = get_redis_connection(url='redis://')
 
             Redis.from_url.assert_called_with('redis://')
 
@@ -40,20 +30,15 @@ class GetRedisConnectionTestCase(unittest.TestCase):
 
             self.assertEqual(connection, Redis.from_url.return_value)
 
-    @patch.multiple(
-        config,
-        REDIS_URL = None,
-        REDIS_HOST = 'redis_host',
-        REDIS_PORT = '6363',
-        REDIS_DB = '1',
-        REDIS_PASS = None,
-        REDIS_PASS_FILE = None
-    )
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_without_url(self):
-        """When `config.REDIS_URL` is not set the connection must be created from the other options."""
+        """When the `url` argument is not set the connection must be created from the other options."""
         with patch('rq_exporter.utils.Redis') as Redis:
-            connection = get_redis_connection()
+            connection = get_redis_connection(
+                host = 'redis_host',
+                port = '6363',
+                db = '1'
+            )
 
             Redis.from_url.assert_not_called()
 
@@ -68,20 +53,16 @@ class GetRedisConnectionTestCase(unittest.TestCase):
 
             self.assertEqual(connection, Redis.return_value)
 
-    @patch.multiple(
-        config,
-        REDIS_URL = None,
-        REDIS_HOST = 'redis_host',
-        REDIS_PORT = '6379',
-        REDIS_DB = '0',
-        REDIS_PASS = '123456',
-        REDIS_PASS_FILE = None
-    )
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_with_password(self):
-        """The option `config.REDIS_PASS` must be used if `config.REDIS_PASS_FILE` is not set."""
+        """The `password` argument must be used if `password_file` was not passed."""
         with patch('rq_exporter.utils.Redis') as Redis:
-            connection = get_redis_connection()
+            connection = get_redis_connection(
+                host = 'redis_host',
+                port = '6379',
+                db = '0',
+                password = '123456'
+            )
 
             Redis.from_url.assert_not_called()
 
@@ -96,20 +77,17 @@ class GetRedisConnectionTestCase(unittest.TestCase):
 
             self.assertEqual(connection, Redis.return_value)
 
-    @patch.multiple(
-        config,
-        REDIS_URL = None,
-        REDIS_HOST = 'redis_host',
-        REDIS_PORT = '6379',
-        REDIS_DB = '0',
-        REDIS_PASS = '123456',
-        REDIS_PASS_FILE = '/path/to/redis_pass'
-    )
     @patch('builtins.open', mock_open(read_data=' FILEPASS \n'))
     def test_creating_redis_connection_with_password_from_file(self):
-        """The option `config.REDIS_PASS_FILE` must be used if set."""
+        """The password must be set from the `password_file` argument if it was passed."""
         with patch('rq_exporter.utils.Redis') as Redis:
-            connection = get_redis_connection()
+            connection = get_redis_connection(
+                host = 'redis_host',
+                port = '6379',
+                db = '0',
+                password = '123456',
+                password_file = '/path/to/redis_pass'
+            )
 
             Redis.from_url.assert_not_called()
 
@@ -124,15 +102,6 @@ class GetRedisConnectionTestCase(unittest.TestCase):
 
             self.assertEqual(connection, Redis.return_value)
 
-    @patch.multiple(
-        config,
-        REDIS_URL = None,
-        REDIS_HOST = 'redis_host',
-        REDIS_PORT = '6379',
-        REDIS_DB = '0',
-        REDIS_PASS = '123456',
-        REDIS_PASS_FILE = '/path/to/redis_pass'
-    )
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_open_file_raises_IOError(self):
         """An `IOError` exception must be raised if there was error while opening the password file."""
@@ -141,7 +110,7 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         with patch('rq_exporter.utils.Redis') as Redis:
 
             with self.assertRaises(IOError):
-                get_redis_connection()
+                get_redis_connection(password_file='/path/to/redis_pass')
 
             Redis.from_url.assert_not_called()
 

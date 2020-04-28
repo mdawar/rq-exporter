@@ -7,11 +7,22 @@ from redis import Redis
 from rq import Queue, Worker
 from rq.job import JobStatus
 
-from . import config
 
-
-def get_redis_connection():
+def get_redis_connection(host='localhost', port='6379', db='0',
+                        password=None, password_file=None, url=None):
     """Get the Redis connection instance.
+
+    Note:
+        If the `url` is provided, all the other options are ignored.
+        If `password_file` is provided it will be used instead of `password.`
+
+    Args:
+        host (str): Redis hostname
+        port (str, int): Redis server port number
+        db (str, int): Redis database number
+        password (str): Redis password
+        password_file (str): Redis password file path
+        url (str): Full Redis connection URL
 
     Returns:
         redis.Redis: Redis connection instance.
@@ -20,22 +31,15 @@ def get_redis_connection():
         IOError: On errors opening the password file.
 
     """
-    if config.REDIS_URL:
-        return Redis.from_url(config.REDIS_URL)
-
-    REDIS_PASS = config.REDIS_PASS
+    if url:
+        return Redis.from_url(url)
 
     # Use password file if provided
-    if config.REDIS_PASS_FILE:
-        with open(config.REDIS_PASS_FILE, 'r') as pass_file:
-            REDIS_PASS = pass_file.read().strip()
+    if password_file:
+        with open(password_file, 'r') as f:
+            password = f.read().strip()
 
-    return Redis(
-        host = config.REDIS_HOST,
-        port = config.REDIS_PORT,
-        db = config.REDIS_DB,
-        password = REDIS_PASS
-    )
+    return Redis(host=host, port=port, db=db, password=password)
 
 
 def get_workers_stats():

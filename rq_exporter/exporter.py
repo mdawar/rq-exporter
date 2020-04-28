@@ -18,22 +18,6 @@ from . import config
 logger = logging.getLogger(__name__)
 
 
-def register_collector():
-    """Register the RQ collector instance.
-
-    Raises:
-        IOError: From `get_redis_connection` if there was an error opening
-            the password file.
-        redis.exceptions.RedisError: On Redis connection errors.
-
-    """
-    # Register the RQ collector
-    # The `collect` method is called on registration
-    REGISTRY.register(RQCollector(
-        get_redis_connection()
-    ))
-
-
 def create_app():
     """Create a WSGI application.
 
@@ -47,6 +31,11 @@ def create_app():
     Returns:
         function: WSGI application function.
 
+    Raises:
+        IOError: From `get_redis_connection` if there was an error opening
+            the password file.
+        redis.exceptions.RedisError: On Redis connection errors.
+
     """
     logging.basicConfig(
         format = config.LOG_FORMAT,
@@ -56,7 +45,18 @@ def create_app():
 
     logger.debug('Registering the RQ collector...')
 
-    register_collector()
+    connection = get_redis_connection(
+        url = config.REDIS_URL,
+        host = config.REDIS_HOST,
+        port = config.REDIS_PORT,
+        db = config.REDIS_DB,
+        password = config.REDIS_PASS,
+        password_file = config.REDIS_PASS_FILE
+    )
+
+    # Register the RQ collector
+    # The `collect` method is called on registration
+    REGISTRY.register(RQCollector(connection))
 
     logger.debug('RQ collector registered')
 
