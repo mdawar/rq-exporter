@@ -91,14 +91,14 @@ Metric Name | Type | Labels | Description
 
 Metric Name | Type | Description
 ----------- | ---- | -----------
-`rq_request_processing_seconds_count` | Summary | Number of requests processed (RQ data collected)
-`rq_request_processing_seconds_sum` | Summary | Total sum of time in seconds processing the requests
+`rq_request_processing_seconds_count` | Summary | Number of times the RQ data were collected
+`rq_request_processing_seconds_sum` | Summary | Total sum of time spent collecting RQ data
 `rq_request_processing_seconds_created` | Gauge | Time created at (`time.time()` return value)
 
 Example:
 
 ```bash
-# HELP rq_request_processing_seconds Time spent processing RQ stats
+# HELP rq_request_processing_seconds Time spent collecting RQ data
 # TYPE rq_request_processing_seconds summary
 rq_request_processing_seconds_count 1.0
 rq_request_processing_seconds_sum 0.029244607000009637

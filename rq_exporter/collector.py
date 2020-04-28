@@ -26,8 +26,8 @@ class RQCollector(object):
     def __init__(self, connection=None):
         self.connection = connection
 
-        # RQ stats processing count and time in seconds
-        self.summary = Summary('rq_request_processing_seconds', 'Time spent processing RQ stats')
+        # RQ data collection count and time in seconds
+        self.summary = Summary('rq_request_processing_seconds', 'Time spent collecting RQ data')
 
     def collect(self):
         """Collect RQ Metrics.
