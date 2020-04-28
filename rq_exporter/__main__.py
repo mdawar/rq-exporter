@@ -27,21 +27,6 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    logging.basicConfig(
-        format = '[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s',
-        datefmt = '%Y-%m-%d %H:%M:%S',
-        level = config.LOG_LEVEL
-    )
-
-
-    def signal_handler(sig, frame):
-        logger.info('Stopping the server...')
-        sys.exit(0)
-
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-
-
     PORT = 9726
 
     if len(sys.argv) > 1:
@@ -71,4 +56,17 @@ def main():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        format = config.LOG_FORMAT,
+        datefmt = config.LOG_DATEFMT,
+        level = config.LOG_LEVEL
+    )
+
+    def signal_handler(sig, frame):
+        logger.info('Stopping the server...')
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
     main()
