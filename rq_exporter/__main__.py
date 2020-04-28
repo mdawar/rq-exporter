@@ -23,7 +23,7 @@ from . import register_collector
 from . import config
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__package__)
 
 
 def main():
@@ -33,7 +33,7 @@ def main():
         arg = sys.argv[1]
 
         try:
-            PORT = int(sys.argv[1])
+            PORT = int(arg)
         except ValueError as exc:
             logger.error(f'Invalid port number: {arg}')
             sys.exit(1)
