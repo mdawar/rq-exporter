@@ -15,5 +15,7 @@ REDIS_DB = os.environ.get('RQ_REDIS_DB', '0')
 REDIS_PASS = os.environ.get('RQ_REDIS_PASS')
 REDIS_PASS_FILE = os.environ.get('RQ_REDIS_PASS_FILE')
 
-# Logging level (Only used when executing the package)
+# Logging config
 LOG_LEVEL = os.environ.get('RQ_EXPORTER_LOG_LEVEL', 'INFO').upper()
+LOG_FORMAT = os.environ.get('RQ_EXPORTER_LOG_FORMAT', '[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s')
+LOG_DATEFMT = os.environ.get('RQ_EXPORTER_LOG_DATEFMT', '%Y-%m-%d %H:%M:%S')
