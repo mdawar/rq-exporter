@@ -19,11 +19,19 @@ services:
       RQ_REDIS_HOST: "redis"
       RQ_REDIS_PASS: "123456"
       RQ_REDIS_DB: "1"
+      # Add the sample project's path to be able to import the classes
+      PYTHONPATH: "$${PYTHONPATH}:/home/project"
+      RQ_WORKER_CLASS: "custom.CustomWorker"
+      RQ_QUEUE_CLASS: "custom.CustomQueue"
     volumes:
       # Mount the package for development
       - type: bind
         source: ./rq_exporter
         target: /app/rq_exporter
+      # Mount a sample project
+      - type: bind
+        source: ./docker-compose/project
+        target: /home/project
     depends_on:
       - redis
 
