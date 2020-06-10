@@ -42,7 +42,7 @@ def get_redis_connection(host='localhost', port='6379', db='0',
     return Redis(host=host, port=port, db=db, password=password)
 
 
-def get_workers_stats(worker_class=Worker):
+def get_workers_stats(worker_class=None):
     """Get the RQ workers stats.
 
     Args:
@@ -55,6 +55,8 @@ def get_workers_stats(worker_class=Worker):
         redis.exceptions.RedisError: On Redis connection errors
 
     """
+    worker_class = worker_class if worker_class is not None else Worker
+
     workers = worker_class.all()
 
     return [
@@ -67,7 +69,7 @@ def get_workers_stats(worker_class=Worker):
     ]
 
 
-def get_queue_jobs(queue_name, queue_class=Queue):
+def get_queue_jobs(queue_name, queue_class=None):
     """Get the jobs by status of a Queue.
 
     Args:
@@ -81,6 +83,8 @@ def get_queue_jobs(queue_name, queue_class=Queue):
         redis.exceptions.RedisError: On Redis connection errors
 
     """
+    queue_class = queue_class if queue_class is not None else Queue
+
     queue = queue_class(queue_name)
 
     return {
@@ -93,7 +97,7 @@ def get_queue_jobs(queue_name, queue_class=Queue):
     }
 
 
-def get_jobs_by_queue(queue_class=Queue):
+def get_jobs_by_queue(queue_class=None):
     """Get the current jobs by queue.
 
     Args:
@@ -106,6 +110,8 @@ def get_jobs_by_queue(queue_class=Queue):
         redis.exceptions.RedisError: On Redis connection errors
 
     """
+    queue_class = queue_class if queue_class is not None else Queue
+
     queues = queue_class.all()
 
     return {
