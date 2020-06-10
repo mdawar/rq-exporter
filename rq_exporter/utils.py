@@ -45,6 +45,9 @@ def get_redis_connection(host='localhost', port='6379', db='0',
 def get_workers_stats(worker_class=Worker):
     """Get the RQ workers stats.
 
+    Args:
+        worker_class (type): RQ Worker class
+
     Returns:
         list: List of worker stats as a dict {name, queues, state}
 
@@ -69,6 +72,7 @@ def get_queue_jobs(queue_name, queue_class=Queue):
 
     Args:
         queue_name (str): The RQ Queue name
+        queue_class (type): RQ Queue class
 
     Returns:
         dict: Number of jobs by job status
@@ -91,6 +95,9 @@ def get_queue_jobs(queue_name, queue_class=Queue):
 
 def get_jobs_by_queue(queue_class=Queue):
     """Get the current jobs by queue.
+
+    Args:
+        queue_class (type): RQ Queue class
 
     Returns:
         dict: Dictionary of job count by status for each queue
