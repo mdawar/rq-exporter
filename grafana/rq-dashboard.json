@@ -549,7 +549,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "rate(rq_request_processing_seconds_sum[$__range]) /rate(rq_request_processing_seconds_count[$__range])",
+          "expr": "rate(rq_request_processing_seconds_sum{job=\"$job\", instance=\"$instance\"}[$__range]) /rate(rq_request_processing_seconds_count{job=\"$job\", instance=\"$instance\"}[$__range])",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -1834,5 +1834,5 @@
   "variables": {
     "list": []
   },
-  "version": 2
+  "version": 3
 }
