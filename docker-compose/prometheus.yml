@@ -11,4 +11,6 @@ scrape_configs:
   - job_name: 'rq_exporter'
     scrape_interval: 5s
     static_configs:
-      - targets: ['rq_exporter:9726']
+      - targets:
+        - rq_exporter:9726
+        - rq_exporter_custom_classes:9726

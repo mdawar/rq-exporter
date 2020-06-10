@@ -1,0 +1,73 @@
+version: '3.7'
+
+
+services:
+
+  rq_exporter_custom_classes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mdawar/rq-exporter:latest
+    # You can also configure the exporter using command line options
+    # command: --redis-host redis --redis-pass 123456
+    ports:
+      - target: 9726
+        published: 9727
+        protocol: tcp
+        mode: host
+    environment:
+      RQ_REDIS_HOST: "redis"
+      RQ_REDIS_PASS: "123456"
+      RQ_REDIS_DB: "1"
+    volumes:
+      # Mount the package for development
+      - type: bind
+        source: ./rq_exporter
+        target: /app/rq_exporter
+    depends_on:
+      - redis
+
+  # RQ workers
+  # To run multiple replicas use:
+  # docker-compose --compatibility up
+  worker_custom_classes:
+    image: mdawar/rq-exporter:latest
+    entrypoint: []
+    command: |
+      rq worker
+      --worker-class 'custom.CustomWorker'
+      --job-class 'custom.CustomJob'
+      --queue-class 'custom.CustomQueue'
+      --url redis://:123456@redis:6379/1
+      high default low
+    working_dir: /home/worker
+    volumes:
+      # Mount a sample project
+      - type: bind
+        source: ./docker-compose/project
+        target: /home/worker
+    depends_on:
+      - redis
+      - rq_exporter
+    deploy:
+      replicas: 2
+
+  # Enqueue jobs for testing
+  enqueue_custom_classes:
+    image: mdawar/rq-exporter:latest
+    entrypoint: []
+    # Pass 'custom' argument to use the RQ custom classes
+    command: python -u enqueue.py custom
+    environment:
+      RQ_REDIS_HOST: "redis"
+      RQ_REDIS_PASS: "123456"
+      RQ_REDIS_DB: "1"
+    working_dir: /home/enqueue
+    volumes:
+      # Mount a sample project
+      - type: bind
+        source: ./docker-compose/project
+        target: /home/enqueue
+    depends_on:
+      - redis
+      - rq_exporter
