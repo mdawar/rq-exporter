@@ -42,7 +42,7 @@ def get_redis_connection(host='localhost', port='6379', db='0',
     return Redis(host=host, port=port, db=db, password=password)
 
 
-def get_workers_stats():
+def get_workers_stats(worker_class=Worker):
     """Get the RQ workers stats.
 
     Returns:
@@ -52,7 +52,7 @@ def get_workers_stats():
         redis.exceptions.RedisError: On Redis connection errors
 
     """
-    workers = Worker.all()
+    workers = worker_class.all()
 
     return [
         {
@@ -64,7 +64,7 @@ def get_workers_stats():
     ]
 
 
-def get_queue_jobs(queue_name):
+def get_queue_jobs(queue_name, queue_class=Queue):
     """Get the jobs by status of a Queue.
 
     Args:
@@ -77,7 +77,7 @@ def get_queue_jobs(queue_name):
         redis.exceptions.RedisError: On Redis connection errors
 
     """
-    queue = Queue(queue_name)
+    queue = queue_class(queue_name)
 
     return {
         JobStatus.QUEUED: queue.count,
@@ -89,7 +89,7 @@ def get_queue_jobs(queue_name):
     }
 
 
-def get_jobs_by_queue():
+def get_jobs_by_queue(queue_class=Queue):
     """Get the current jobs by queue.
 
     Returns:
@@ -99,8 +99,8 @@ def get_jobs_by_queue():
         redis.exceptions.RedisError: On Redis connection errors
 
     """
-    queues = Queue.all()
+    queues = queue_class.all()
 
     return {
-        q.name: get_queue_jobs(q.name) for q in queues
+        q.name: get_queue_jobs(q.name, queue_class) for q in queues
     }
