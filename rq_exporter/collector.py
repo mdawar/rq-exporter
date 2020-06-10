@@ -20,11 +20,14 @@ class RQCollector(object):
 
     Args:
         connection (redis.Redis): Redis connection instance.
+        worker_class (type): RQ Worker class
+        queue_class (type): RQ Queue class
 
     """
-
-    def __init__(self, connection=None):
+    def __init__(self, connection=None, worker_class=None, queue_class=None):
         self.connection = connection
+        self.worker_class = worker_class
+        self.queue_class = queue_class
 
         # RQ data collection count and time in seconds
         self.summary = Summary('rq_request_processing_seconds', 'Time spent collecting RQ data')
@@ -49,12 +52,12 @@ class RQCollector(object):
                 rq_workers = GaugeMetricFamily('rq_workers', 'RQ workers', labels=['name', 'state', 'queues'])
                 rq_jobs = GaugeMetricFamily('rq_jobs', 'RQ jobs by state', labels=['queue', 'status'])
 
-                for worker in get_workers_stats():
+                for worker in get_workers_stats(self.worker_class):
                     rq_workers.add_metric([worker['name'], worker['state'], ','.join(worker['queues'])], 1)
 
                 yield rq_workers
 
-                for (queue_name, jobs) in get_jobs_by_queue().items():
+                for (queue_name, jobs) in get_jobs_by_queue(self.queue_class).items():
                     for (status, count) in jobs.items():
                         rq_jobs.add_metric([queue_name, status], count)
 

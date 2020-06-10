@@ -82,8 +82,24 @@ class RQCollectorTestCase(unittest.TestCase):
             list(collector.collect())
 
         Connection.assert_called_once_with(connection)
-        get_workers_stats.assert_called_once_with()
-        get_jobs_by_queue.assert_called_once_with()
+        get_workers_stats.assert_called_once_with(None)
+        get_jobs_by_queue.assert_called_once_with(None)
+
+    def test_passed_rq_classes_are_used(self, get_workers_stats, get_jobs_by_queue):
+        """Test that the RQ classes passed to `RQCollector` are used to get the workers and jobs."""
+        get_workers_stats.return_value = []
+        get_jobs_by_queue.return_value = {}
+
+        worker_class = Mock()
+        queue_class = Mock()
+
+        collector = RQCollector(worker_class=worker_class, queue_class=queue_class)
+
+        with patch('rq_exporter.collector.Connection') as Connection:
+            list(collector.collect())
+
+        get_workers_stats.assert_called_once_with(worker_class)
+        get_jobs_by_queue.assert_called_once_with(queue_class)
 
     def test_metrics_with_empty_data(self, get_workers_stats, get_jobs_by_queue):
         """Test the workers and jobs metrics when there's no data."""
@@ -135,8 +151,8 @@ class RQCollectorTestCase(unittest.TestCase):
         # On registration the `collect` method is called
         self.registry.register(RQCollector())
 
-        get_workers_stats.assert_called_once_with()
-        get_jobs_by_queue.assert_called_once_with()
+        get_workers_stats.assert_called_once_with(None)
+        get_jobs_by_queue.assert_called_once_with(None)
 
         for w in workers:
             self.assertEqual(1, self.registry.get_sample_value(
