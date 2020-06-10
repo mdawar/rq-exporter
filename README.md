@@ -128,6 +128,8 @@ CLI Argument | Env Variable | Default Value | Description
 `--redis-db` | `RQ_REDIS_DB` | `0` | Redis database number
 `--redis-pass` | `RQ_REDIS_PASS` | `None` | Redis password
 `--redis-pass-file` | `RQ_REDIS_PASS_FILE` | `None` |  Redis password file path (e.g. Path of a mounted Docker secret)
+`--worker-class` | `RQ_WORKER_CLASS` | `rq.Worker` | RQ worker class
+`--queue-class` | `RQ_QUEUE_CLASS` | `rq.Queue` | RQ queue class
 `--log-level` | `RQ_EXPORTER_LOG_LEVEL` | `INFO` | Logging level
 `--log-format` | `RQ_EXPORTER_LOG_FORMAT` | `[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s` | Logging handler format string
 `--log-datefmt` | `RQ_EXPORTER_LOG_DATEFMT` | `%Y-%m-%d %H:%M:%S` | Logging date/time format string
@@ -234,6 +236,18 @@ To cleanup after development:
 $ # Use -v to remove volumes
 $ docker-compose down -v
 ```
+
+You can also start another `rq-exporter` instance that collects stats from a project using custom **RQ** `Worker` and `Queue` instances:
+
+```console
+$ # Using -f to pass multiple docker-compose files
+$ # docker-compose.custom.yml defines services using custom RQ classes
+$ docker-compose -f docker-compose.yml -f docker-compose.custom.yml up
+$ # To cleanup you need to also pass the same files
+$ docker-compose -f docker-compose.yml -f docker-compose.custom.yml down
+```
+
+A new **RQ exporter** instance will be exposed  on port `9727` on your local machine.
 
 **Note**: If you don't have `docker-compose` installed follow the [installation](https://docs.docker.com/compose/install/) instructions on the official website.
 
