@@ -213,6 +213,16 @@ class GetWorkersStatsTestCase(PatchDefaultArguments):
             ]
         )
 
+    def test_passing_custom_Worker_class(self):
+        """Test passing a custom `Worker` class."""
+        worker_class = Mock()
+        worker_class.all.return_value = []
+
+        get_workers_stats(worker_class)
+
+        self.Worker.all.assert_not_called()
+        worker_class.all.assert_called_once_with()
+
 
 class GetQueueJobsTestCase(PatchDefaultArguments):
     """Tests for the `get_queue_jobs` function."""
@@ -250,6 +260,15 @@ class GetQueueJobsTestCase(PatchDefaultArguments):
                 JobStatus.SCHEDULED: 4
             }
         )
+
+    def test_passing_custom_Queue_class(self):
+        """Test passing a custom `Queue` class."""
+        queue_class = Mock()
+
+        get_queue_jobs('queue_name', queue_class)
+
+        self.Queue.assert_not_called()
+        queue_class.assert_called_once_with('queue_name')
 
 
 class GetJobsByQueueTestCase(PatchDefaultArguments):
@@ -319,3 +338,13 @@ class GetJobsByQueueTestCase(PatchDefaultArguments):
                 'high': q_high_jobs
             }
         )
+
+    def test_passing_custom_Queue_class(self):
+        """Test passing a custom `Queue` class."""
+        queue_class = Mock()
+        queue_class.all.return_value = []
+
+        get_jobs_by_queue(queue_class)
+
+        self.Queue.all.assert_not_called()
+        queue_class.all.assert_called_once_with()
