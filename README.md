@@ -237,7 +237,7 @@ $ # Use -v to remove volumes
 $ docker-compose down -v
 ```
 
-You can also start another `rq-exporter` instance that collects stats from a project using custom **RQ** `Worker` and `Queue` instances:
+You can also start another `rq-exporter` instance that collects stats from a project using custom **RQ** `Worker` and `Queue` classes:
 
 ```console
 $ # Using -f to pass multiple docker-compose files
