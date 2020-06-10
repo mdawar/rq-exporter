@@ -54,9 +54,12 @@ def create_app():
         password_file = config.REDIS_PASS_FILE
     )
 
+    worker_class = import_attribute(config.RQ_WORKER_CLASS)
+    queue_class = import_attribute(config.RQ_QUEUE_CLASS)
+
     # Register the RQ collector
     # The `collect` method is called on registration
-    REGISTRY.register(RQCollector(connection))
+    REGISTRY.register(RQCollector(connection, worker_class, queue_class))
 
     logger.debug('RQ collector registered')
 

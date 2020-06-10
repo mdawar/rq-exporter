@@ -26,6 +26,7 @@ import argparse
 from prometheus_client import start_wsgi_server
 from prometheus_client.core import REGISTRY
 from redis.exceptions import RedisError
+from rq.utils import import_attribute
 
 from .collector import RQCollector
 from .utils import get_redis_connection
@@ -126,6 +127,26 @@ def parse_args():
     )
 
     parser.add_argument(
+        '--worker-class',
+        dest = 'worker_class',
+        type = str,
+        default = config.RQ_WORKER_CLASS,
+        metavar = 'module.CustomWorker',
+        required = False,
+        help = f'RQ Worker class (Default: {config.DEFAULT_WORKER_CLASS})'
+    )
+
+    parser.add_argument(
+        '--queue-class',
+        dest = 'queue_class',
+        type = str,
+        default = config.RQ_QUEUE_CLASS,
+        metavar = 'module.CustomQueue',
+        required = False,
+        help = f'RQ Queue class (Default: {config.DEFAULT_QUEUE_CLASS})'
+    )
+
+    parser.add_argument(
         '--log-level',
         dest = 'log_level',
         type = str,
@@ -179,11 +200,17 @@ def main():
             password_file = args.redis_pass_file
         )
 
+        worker_class = import_attribute(args.worker_class)
+        queue_class = import_attribute(args.queue_class)
+
         # Register the RQ collector
         # The `collect` method is called on registration
-        REGISTRY.register(RQCollector(connection))
+        REGISTRY.register(RQCollector(connection, worker_class, queue_class))
     except (IOError, RedisError) as exc:
         logger.exception('There was an error starting the RQ exporter')
+        sys.exit(1)
+    except (ImportError, AttributeError) as exc:
+        logger.exception('Incorrect RQ class location')
         sys.exit(1)
 
     # Start the WSGI server
