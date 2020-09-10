@@ -5,7 +5,7 @@ RQ exporter utility functions.
 
 from redis import Redis
 from rq import Queue, Worker
-from rq.job import JobStatus
+from rq.job import JobStatus, Job
 
 
 def get_redis_connection(host='localhost', port='6379', db='0',
@@ -69,6 +69,44 @@ def get_workers_stats(worker_class=None):
     ]
 
 
+def get_job_timings(job):
+    """
+
+    Returns:
+        dict:
+
+    """
+    # Runtime should never be -1 unless the job is not from a finished_job_registry
+    return {
+        'func_name': job.func_name,
+        'started_at': job.started_at.timestamp(),
+        'ended_at': job.ended_at.timestamp(),
+        'runtime': (job.ended_at - job.started_at).total_seconds() if job.ended_at else -1
+    }
+
+
+def get_registry_timings(connection, job_registry, limit=-1):
+    """Get the timings for jobs in a Registry.
+
+    Args:
+        job_registry (rq.BaseRegistry): The RQ Registry instance
+        limit (int): The max number of jobs to retrieve
+
+    Returns:
+        dict: 
+
+    Raises:
+        redis.exceptions.RedisError: On Redis connection errors
+
+    """
+    job_ids = job_registry.get_job_ids(end=limit)
+    jobs = Job.fetch_many(job_ids, connection=connection)
+
+    return {
+        job.id: get_job_timings(job) for job in jobs
+    }
+
+
 def get_queue_jobs(queue_name, queue_class=None):
     """Get the jobs by status of a Queue.
 
@@ -116,4 +154,27 @@ def get_jobs_by_queue(queue_class=None):
 
     return {
         q.name: get_queue_jobs(q.name, queue_class) for q in queues
+    }
+
+
+def get_finished_registries_by_queue(connection, queue_class=None):
+    """Get finished registries by queue.
+
+    Args:
+        connection : this is required to fetch jobs
+        queue_class (type): RQ Queue class
+
+    Returns:
+        dict: Dictionary of job count by status for each queue
+
+    Raises:
+        redis.exceptions.RedisError: On Redis connection errors
+
+    """
+    queue_class = queue_class if queue_class is not None else Queue
+
+    queues = queue_class.all()
+
+    return {
+        q.name: get_registry_timings(connection, q.finished_job_registry) for q in queues
     }
