@@ -85,7 +85,7 @@ def get_job_timings(job):
     }
 
 
-def get_registry_timings(connection, job_registry, limit=-1):
+def get_registry_timings(connection, job_registry, limit=3):
     """Get the timings for jobs in a Registry.
 
     Args:
@@ -99,7 +99,7 @@ def get_registry_timings(connection, job_registry, limit=-1):
         redis.exceptions.RedisError: On Redis connection errors
 
     """
-    job_ids = job_registry.get_job_ids(end=limit)
+    job_ids = job_registry.get_job_ids(start=limit*-1, end=-1)
     jobs = Job.fetch_many(job_ids, connection=connection)
 
     return {
