@@ -14,6 +14,14 @@ def long_running_job(s=10):
     return s
 
 
+def short_running_job(s=10):
+    s = s/10
+    print(f'long_running_job: sleeping for {s} seconds')
+    time.sleep(s)
+
+    return s
+
+
 def process_data(s=10):
     print(f'process_data: sleeping for {s} seconds')
     time.sleep(s)
