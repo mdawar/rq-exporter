@@ -70,10 +70,13 @@ def get_workers_stats(worker_class=None):
 
 
 def get_job_timings(job):
-    """
+    """Get stats for the RQ job.
+
+    Args:
+        job (rq.job.Job): an instance of a RQ job
 
     Returns:
-        dict:
+        dict: Dictionary of basic runtime stats for the job
 
     """
     # Runtime should never be -1 unless the job is not from a finished_job_registry
@@ -93,12 +96,13 @@ def get_registry_timings(connection, job_registry, limit=3):
         limit (int): The max number of jobs to retrieve
 
     Returns:
-        dict: 
+        dict: Dictionary of job id to a dict of the job's stats
 
     Raises:
         redis.exceptions.RedisError: On Redis connection errors
 
     """
+    # Jobs are added in RQ with zscore of current time + ttl, fetch by last completed
     job_ids = job_registry.get_job_ids(start=limit*-1, end=-1)
     jobs = Job.fetch_many(job_ids, connection=connection)
 
@@ -165,7 +169,7 @@ def get_finished_registries_by_queue(connection, queue_class=None):
         queue_class (type): RQ Queue class
 
     Returns:
-        dict: Dictionary of job count by status for each queue
+        dict: Dictionary of queues with nested runtime stats
 
     Raises:
         redis.exceptions.RedisError: On Redis connection errors

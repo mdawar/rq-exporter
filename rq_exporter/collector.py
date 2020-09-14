@@ -51,7 +51,8 @@ class RQCollector(object):
             with Connection(self.connection):
                 rq_workers = GaugeMetricFamily('rq_workers', 'RQ workers', labels=['name', 'state', 'queues'])
                 rq_jobs = GaugeMetricFamily('rq_jobs', 'RQ jobs by state', labels=['queue', 'status'])
-                rq_timings = SummaryMetricFamily('rq_timings', 'RQ jobs by state', labels=['queue', 'func_name', 'job_id'])
+                # This measures runtime as job.ended_at - job.started_at, not from enqueued_at
+                rq_timings = SummaryMetricFamily('rq_timings', 'Sampled runtime of RQ jobs', labels=['queue', 'func_name', 'job_id'])
 
                 for worker in get_workers_stats(self.worker_class):
                     rq_workers.add_metric([worker['name'], worker['state'], ','.join(worker['queues'])], 1)
@@ -65,8 +66,9 @@ class RQCollector(object):
                 yield rq_jobs
 
                 for (queue_name, registries) in get_finished_registries_by_queue(
-                    self.connection, self.queue_class).items():
+                        self.connection, self.queue_class).items():
                     for (_, timings) in registries.items():
+                        # Samples are added individually with count_value as 1, timestamps past Prometheus will be dropped
                         rq_timings.add_metric([queue_name, timings['func_name']], 1, timings['runtime'], timings['ended_at'])
 
                 yield rq_timings
