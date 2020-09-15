@@ -52,7 +52,7 @@ class RQCollector(object):
                 rq_workers = GaugeMetricFamily('rq_workers', 'RQ workers', labels=['name', 'state', 'queues'])
                 rq_jobs = GaugeMetricFamily('rq_jobs', 'RQ jobs by state', labels=['queue', 'status'])
                 # This measures runtime as job.ended_at - job.started_at, not from enqueued_at
-                rq_timings = SummaryMetricFamily('rq_timings', 'Sampled runtime of RQ jobs', labels=['queue', 'func_name', 'job_id'])
+                rq_timings = SummaryMetricFamily('rq_timings', 'Sampled runtime of RQ jobs', labels=['queue', 'func_name'])
 
                 for worker in get_workers_stats(self.worker_class):
                     rq_workers.add_metric([worker['name'], worker['state'], ','.join(worker['queues'])], 1)
