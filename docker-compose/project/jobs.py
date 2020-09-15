@@ -16,7 +16,7 @@ def long_running_job(s=10):
 
 def short_running_job(s=10):
     s = s/10
-    print(f'long_running_job: sleeping for {s} seconds')
+    print(f'short_running_job: sleeping for {s} seconds')
     time.sleep(s)
 
     return s
