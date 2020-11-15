@@ -21,7 +21,7 @@ def main(custom_classes=False):
 
     while True:
         # Choose a random job
-        job = random.choice((jobs.long_running_job, jobs.process_data))
+        job = random.choice((jobs.long_running_job, jobs.process_data, jobs.short_running_job))
 
         # Choose a random queue
         queue = random.choice(queues_list)
