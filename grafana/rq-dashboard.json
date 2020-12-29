@@ -60,7 +60,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1587990213889,
+  "iteration": 1609240199262,
   "links": [],
   "panels": [
     {
@@ -83,11 +83,7 @@
       "colorPostfix": false,
       "colorPrefix": false,
       "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
+      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
       "datasource": "${DS_PROMETHEUS}",
       "decimals": null,
       "format": "none",
@@ -487,11 +483,7 @@
       "colorPostfix": false,
       "colorPrefix": false,
       "colorValue": true,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
+      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
       "datasource": "${DS_PROMETHEUS}",
       "decimals": null,
       "description": "The average time the exporter took to query the Redis instance for the RQ workers and jobs data.",
@@ -592,11 +584,7 @@
       "colorBackground": true,
       "colorPostfix": false,
       "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
+      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "description": "This percentage reflects the number of jobs currently queued, an optimal value is a value near or equal to 0% which means the jobs are being picked up by the workers without delays.\n\nA high percentage of queued jobs means that you need to add more workers as the current workers are not able to process all the jobs in a timely manner.",
@@ -654,7 +642,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rq_jobs{status=\"queued\", job=\"$job\", instance=\"$instance\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
+          "expr": "sum(rq_jobs{status=\"queued\", job=\"$job\", instance=\"$instance\", queue=~\"$queue\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -681,11 +669,7 @@
       "colorBackground": false,
       "colorPostfix": false,
       "colorValue": false,
-      "colors": [
-        "#d44a3a",
-        "rgba(237, 129, 40, 0.89)",
-        "#299c46"
-      ],
+      "colors": ["#d44a3a", "rgba(237, 129, 40, 0.89)", "#299c46"],
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "description": "",
@@ -743,7 +727,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rq_jobs{status=\"started\", job=\"$job\", instance=\"$instance\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
+          "expr": "sum(rq_jobs{status=\"started\", job=\"$job\", instance=\"$instance\", queue=~\"$queue\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -770,11 +754,7 @@
       "colorBackground": true,
       "colorPostfix": false,
       "colorValue": false,
-      "colors": [
-        "#d44a3a",
-        "rgba(237, 129, 40, 0.89)",
-        "#299c46"
-      ],
+      "colors": ["#d44a3a", "rgba(237, 129, 40, 0.89)", "#299c46"],
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "format": "percentunit",
@@ -833,7 +813,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rq_jobs{status=\"finished\", job=\"$job\", instance=\"$instance\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
+          "expr": "sum(rq_jobs{status=\"finished\", job=\"$job\", instance=\"$instance\", queue=~\"$queue\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -861,11 +841,7 @@
       "colorBackground": true,
       "colorPostfix": false,
       "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
+      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "description": "The percentage of failed jobs will always be higher if you are using the default failure TTL  which is 1 year and you don't re-queue the jobs.\n\nIf you don't intend to re-queue the jobs you should set a lower failure TTL.",
@@ -923,7 +899,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rq_jobs{status=\"failed\", job=\"$job\", instance=\"$instance\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
+          "expr": "sum(rq_jobs{status=\"failed\", job=\"$job\", instance=\"$instance\", queue=~\"$queue\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -956,11 +932,7 @@
       "colorBackground": false,
       "colorPostfix": false,
       "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
+      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "format": "percentunit",
@@ -1017,7 +989,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rq_jobs{status=\"deferred\", job=\"$job\", instance=\"$instance\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
+          "expr": "sum(rq_jobs{status=\"deferred\", job=\"$job\", instance=\"$instance\", queue=~\"$queue\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -1044,11 +1016,7 @@
       "colorBackground": false,
       "colorPostfix": false,
       "colorValue": false,
-      "colors": [
-        "#d44a3a",
-        "rgba(237, 129, 40, 0.89)",
-        "#299c46"
-      ],
+      "colors": ["#d44a3a", "rgba(237, 129, 40, 0.89)", "#299c46"],
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "format": "percentunit",
@@ -1105,7 +1073,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rq_jobs{status=\"scheduled\", job=\"$job\", instance=\"$instance\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
+          "expr": "sum(rq_jobs{status=\"scheduled\", job=\"$job\", instance=\"$instance\", queue=~\"$queue\"}) / sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -1176,7 +1144,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (status) (rq_jobs{job=\"$job\", instance=\"$instance\"}) / ignoring(status) group_left sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
+          "expr": "sum by (status) (rq_jobs{job=\"$job\", instance=\"$instance\", queue=~\"$queue\"}) / ignoring(status) group_left sum(rq_jobs{job=\"$job\", instance=\"$instance\"})",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -1272,7 +1240,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rq_jobs{job=\"$job\", instance=\"$instance\"}) by (status)",
+          "expr": "sum(rq_jobs{job=\"$job\", instance=\"$instance\", queue=~\"$queue\"}) by (status)",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -1740,12 +1708,7 @@
   "refresh": "",
   "schemaVersion": 22,
   "style": "dark",
-  "tags": [
-    "prometheus",
-    "rq",
-    "python-rq",
-    "rq-exporter"
-  ],
+  "tags": ["prometheus", "rq", "python-rq", "rq-exporter"],
   "templating": {
     "list": [
       {
@@ -1807,6 +1770,29 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
+        "definition": "label_values({__name__=~\"rq_.*\"}, queue)",
+        "hide": 0,
+        "includeAll": true,
+        "index": -1,
+        "label": "Queue",
+        "multi": true,
+        "name": "queue",
+        "options": [],
+        "query": "label_values({__name__=~\"rq_.*\"}, queue)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   },
@@ -1834,5 +1820,5 @@
   "variables": {
     "list": []
   },
-  "version": 3
+  "version": 4
 }
