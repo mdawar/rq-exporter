@@ -7,6 +7,7 @@ Register the RQ collector and create the WSGI application instance.
 
 import logging
 
+from rq.utils import import_attribute
 from prometheus_client import make_wsgi_app
 from prometheus_client.core import REGISTRY
 
