@@ -3,8 +3,9 @@ Tests for the rq_exporter.utils module.
 
 """
 
+from os import path
 import unittest
-from unittest.mock import patch, mock_open, Mock, PropertyMock, call
+from unittest.mock import patch, mock_open, Mock, PropertyMock, call, MagicMock
 
 import rq
 from rq.job import JobStatus
@@ -52,6 +53,21 @@ class GetRedisConnectionTestCase(unittest.TestCase):
             )
 
             self.assertEqual(connection, Redis.return_value)
+            
+    @patch('builtins.open', mock_open())
+    def test_creating_redis_connection_with_sentinel(self):
+        """When the `sentinel` argument is  set the connection must be created from the sentinel."""
+        with patch('rq_exporter.utils.Sentinel') as Sentinel:
+            connection = get_redis_connection(
+                sentinel = '127.0.0.1',
+                sentinel_port = '26379',
+                sentinel_master_name = 'mymaster'
+            )
+            Sentinel().master_for.assert_called_with('mymaster', db='0', socket_timeout=1)
+            
+            open.assert_not_called()
+            
+            self.assertEqual(connection, Sentinel().master_for.return_value)
 
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_with_password(self):
@@ -117,8 +133,7 @@ class GetRedisConnectionTestCase(unittest.TestCase):
             open.assert_called_with('/path/to/redis_pass', 'r')
 
             Redis.assert_not_called()
-
-
+            
 class GetWorkersStatsTestCase(unittest.TestCase):
     """Tests for the `get_workers_stats` function."""
 

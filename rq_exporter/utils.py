@@ -4,12 +4,14 @@ RQ exporter utility functions.
 """
 
 from redis import Redis
+from redis.sentinel import Sentinel
 from rq import Queue, Worker
 from rq.job import JobStatus
 
 
-def get_redis_connection(host='localhost', port='6379', db='0',
-                        password=None, password_file=None, url=None):
+def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
+                         sentinel_port='26379', sentinel_master_name=None,
+                         password=None, password_file=None, url=None):
     """Get the Redis connection instance.
 
     Note:
@@ -20,6 +22,9 @@ def get_redis_connection(host='localhost', port='6379', db='0',
         host (str): Redis hostname
         port (str, int): Redis server port number
         db (str, int): Redis database number
+        sentinel (str): Redis sentinel
+        sentinel_port (str, int): Redis sentinel port number
+        sentinel_master_name (str): Redis sentinel master name
         password (str): Redis password
         password_file (str): Redis password file path
         url (str): Full Redis connection URL
@@ -38,6 +43,11 @@ def get_redis_connection(host='localhost', port='6379', db='0',
     if password_file:
         with open(password_file, 'r') as f:
             password = f.read().strip()
+    
+    if sentinel:
+        addr_list = [(url, sentinel_port) for url in sentinel.split(",")]
+        sentinel = Sentinel(addr_list, socket_timeout=1)
+        return sentinel.master_for(sentinel_master_name, socket_timeout=1, db=db)
 
     return Redis(host=host, port=port, db=db, password=password)
 

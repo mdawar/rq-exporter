@@ -184,6 +184,9 @@ $ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:9726 --threads 2
 ```console
 $ # Build the docker image and tag it rq-exporter:latest
 $ docker build -t rq-exporter .
+
+$ # M1 MacOs Build the docker image and tag it rq-exporter:latest
+$ docker buildx build --platform linux/amd64 -t rq-exporter .
 ```
 
 The image can also be built using `docker-compose`:
