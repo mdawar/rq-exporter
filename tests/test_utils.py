@@ -3,9 +3,8 @@ Tests for the rq_exporter.utils module.
 
 """
 
-from os import path
 import unittest
-from unittest.mock import patch, mock_open, Mock, PropertyMock, call, MagicMock
+from unittest.mock import patch, mock_open, Mock, PropertyMock, call
 
 import rq
 from rq.job import JobStatus
