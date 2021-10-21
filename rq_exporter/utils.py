@@ -10,7 +10,7 @@ from rq.job import JobStatus
 
 
 def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
-                         sentinel_port='26379', sentinel_master_name=None,
+                         sentinel_port='26379', sentinel_master=None,
                          password=None, password_file=None, url=None):
     """Get the Redis connection instance.
 
@@ -24,7 +24,7 @@ def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
         db (str, int): Redis database number
         sentinel (str): Redis sentinel
         sentinel_port (str, int): Redis sentinel port number
-        sentinel_master_name (str): Redis sentinel master name
+        sentinel_master (str): Redis sentinel master name
         password (str): Redis password
         password_file (str): Redis password file path
         url (str): Full Redis connection URL
@@ -43,11 +43,11 @@ def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
     if password_file:
         with open(password_file, 'r') as f:
             password = f.read().strip()
-    
+
     if sentinel:
         addr_list = [(url, sentinel_port) for url in sentinel.split(",")]
         sentinel = Sentinel(addr_list, socket_timeout=1)
-        return sentinel.master_for(sentinel_master_name, socket_timeout=1, db=db)
+        return sentinel.master_for(sentinel_master, socket_timeout=1, db=db)
 
     return Redis(host=host, port=port, db=db, password=password)
 
