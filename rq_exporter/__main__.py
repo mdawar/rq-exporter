@@ -107,6 +107,36 @@ def parse_args():
     )
 
     parser.add_argument(
+        '--sentinel-host',
+        dest='sentinel_host',
+        type=str,
+        default=config.REDIS_SENTINEL_HOST,
+        metavar='127.0.0.1,127.0.0.2,127.0.0.3',
+        required=False,
+        help=f'Redis sentinel server URL (Default: {config.DEFAULT_SENTINEL_HOST})',
+    )
+
+    parser.add_argument(
+        '--sentinel-port',
+        dest='sentinel_port',
+        type=str,
+        default=config.REDIS_SENTINEL_PORT,
+        metavar='SENTINEL PORT',
+        required=False,
+        help=f'Redis sentinel port (Default: {config.DEFAULT_SENTINEL_PORT})',
+    )
+
+    parser.add_argument(
+        '--sentinel-master',
+        dest='sentinel_master',
+        type=str,
+        default=config.REDIS_SENTINEL_MASTER,
+        metavar='SENTINEL MASTER NAME',
+        required=False,
+        help=f'Redis sentinel master name (Default: {config.DEFAULT_SENTINEL_MASTER})',
+    )
+
+    parser.add_argument(
         '--redis-pass',
         dest = 'redis_pass',
         type = str,
@@ -192,12 +222,15 @@ def main():
     # Register the RQ collector
     try:
         connection = get_redis_connection(
-            url = args.redis_url,
-            host = args.redis_host,
-            port = args.redis_port,
-            db = args.redis_db,
-            password = args.redis_pass,
-            password_file = args.redis_pass_file
+            url=args.redis_url,
+            host=args.redis_host,
+            port=args.redis_port,
+            db=args.redis_db,
+            sentinel=args.sentinel_host,
+            sentinel_port=args.sentinel_port,
+            sentinel_master=args.sentinel_master,
+            password=args.redis_pass,
+            password_file=args.redis_pass_file,
         )
 
         worker_class = import_attribute(args.worker_class)

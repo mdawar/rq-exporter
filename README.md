@@ -126,6 +126,9 @@ CLI Argument | Env Variable | Default Value | Description
 `--redis-host` | `RQ_REDIS_HOST` | `localhost` | Redis host name
 `--redis-port` | `RQ_REDIS_PORT` | `6379` | Redis port number
 `--redis-db` | `RQ_REDIS_DB` | `0` | Redis database number
+`--sentinel-host` | `RQ_SENTINEL_HOST` | `localhost` | Redis Sentinel host
+`--sentinel-port` | `RQ_SENTINEL_PORT` | `26379` | Redis Sentinel port
+`--sentinel-master` | `RQ_SENTINEL_MASTER` | `master` | Redis Sentinel master name
 `--redis-pass` | `RQ_REDIS_PASS` | `None` | Redis password
 `--redis-pass-file` | `RQ_REDIS_PASS_FILE` | `None` |  Redis password file path (e.g. Path of a mounted Docker secret)
 `--worker-class` | `RQ_WORKER_CLASS` | `rq.Worker` | RQ worker class
@@ -184,6 +187,9 @@ $ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:9726 --threads 2
 ```console
 $ # Build the docker image and tag it rq-exporter:latest
 $ docker build -t rq-exporter .
+
+$ # M1 MacOs Build the docker image and tag it rq-exporter:latest
+$ docker buildx build --platform linux/amd64 -t rq-exporter .
 ```
 
 The image can also be built using `docker-compose`:
