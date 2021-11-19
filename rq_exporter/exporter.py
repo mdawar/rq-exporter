@@ -51,6 +51,9 @@ def create_app():
         host = config.REDIS_HOST,
         port = config.REDIS_PORT,
         db = config.REDIS_DB,
+        sentinel=config.REDIS_SENTINEL_HOST,
+        sentinel_port=config.REDIS_SENTINEL_PORT,
+        sentinel_master=config.REDIS_SENTINEL_MASTER,
         password = config.REDIS_PASS,
         password_file = config.REDIS_PASS_FILE
     )
