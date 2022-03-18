@@ -2,6 +2,7 @@
 RQ exporter utility functions.
 
 """
+from urllib.parse import urlparse
 
 from redis import Redis
 from redis.sentinel import Sentinel
@@ -37,7 +38,18 @@ def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
 
     """
     if url:
-        return Redis.from_url(url)
+        if url.startswith("rediss://"):
+            parsed = urlparse(url)
+            return Redis(
+                host=parsed.hostname,
+                port=parsed.port,
+                username=parsed.username,
+                password=parsed.password,
+                ssl=True,
+                ssl_cert_reqs=None,
+            )
+        else:
+            return Redis.from_url(url)
 
     # Use password file if provided
     if password_file:

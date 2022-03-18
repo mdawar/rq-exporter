@@ -31,6 +31,22 @@ class GetRedisConnectionTestCase(unittest.TestCase):
             self.assertEqual(connection, Redis.from_url.return_value)
 
     @patch('builtins.open', mock_open())
+    def test_creating_redis_connection_from_url_with_ssl(self):
+        """When the `url` argument with SSL is passed the connection must be created with `Redis`."""
+        with patch('rq_exporter.utils.Redis') as Redis:
+            connection = get_redis_connection(url='rediss://user:pass@host:1234')
+
+            Redis.assert_called_with(
+                host="host", port=1234, username="user", password="pass", ssl=True, ssl_cert_reqs=None
+            )
+
+            open.assert_not_called()
+
+            Redis.assert_called()
+
+            self.assertEqual(connection, Redis.return_value)
+
+    @patch('builtins.open', mock_open())
     def test_creating_redis_connection_without_url(self):
         """When the `url` argument is not set the connection must be created from the other options."""
         with patch('rq_exporter.utils.Redis') as Redis:
