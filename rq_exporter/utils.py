@@ -73,7 +73,10 @@ def get_workers_stats(worker_class=None):
         {
             'name': w.name,
             'queues': w.queue_names(),
-            'state': w.get_state()
+            'state': w.get_state(),
+            'successful_job_count': w.successful_job_count,
+            'failed_job_count': w.failed_job_count,
+            'total_working_time': w.total_working_time
         }
         for w in workers
     ]
