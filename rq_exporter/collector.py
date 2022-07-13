@@ -51,7 +51,7 @@ class RQCollector(object):
         with self.summary.time():
             with Connection(self.connection):
                 rq_workers = GaugeMetricFamily('rq_workers', 'RQ workers', labels=['name', 'state', 'queues'])
-                rq_workers_success = CounterMetricFamily('rq_workers_success', 'RQ workers success count', labels=['name'])
+                rq_workers_success = CounterMetricFamily('rq_workers_success', 'RQ workers success count', labels=['name', 'queues'])
                 rq_workers_failed = CounterMetricFamily('rq_workers_failed', 'RQ workers fail count', labels=['name', 'queues'])
                 rq_workers_working_time = CounterMetricFamily('rq_workers_working_time', 'RQ workers spent seconds', labels=['name', 'queues'])
 
