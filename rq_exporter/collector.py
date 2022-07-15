@@ -5,10 +5,9 @@ RQ metrics collector.
 
 import logging
 
-from prometheus_client.metrics_core import CounterMetricFamily
 from rq import Connection
 from prometheus_client import Summary
-from prometheus_client.core import GaugeMetricFamily
+from prometheus_client.core import GaugeMetricFamily, CounterMetricFamily
 
 from .utils import get_workers_stats, get_jobs_by_queue
 
