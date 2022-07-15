@@ -162,14 +162,20 @@ class GetWorkersStatsTestCase(unittest.TestCase):
         worker_one.configure_mock(**{
             'name': 'worker_one',
             'queue_names.return_value': ['default'],
-            'get_state.return_value': 'idle'
+            'get_state.return_value': 'idle',
+            'successful_job_count': 1,
+            'failed_job_count': 2,
+            'total_working_time': 3
         })
 
         worker_two = Mock()
         worker_two.configure_mock(**{
             'name': 'worker_two',
             'queue_names.return_value': ['high', 'default', 'low'],
-            'get_state.return_value': 'busy'
+            'get_state.return_value': 'busy',
+            'successful_job_count': 4,
+            'failed_job_count': 5,
+            'total_working_time': 6
         })
 
         Worker.all.return_value = [worker_one, worker_two]
@@ -184,14 +190,20 @@ class GetWorkersStatsTestCase(unittest.TestCase):
                 {
                     'name': 'worker_one',
                     'queues': ['default'],
-                    'state': 'idle'
+                    'state': 'idle',
+                    'successful_job_count': 1,
+                    'failed_job_count': 2,
+                    'total_working_time': 3
                 },
                 {
                     'name': 'worker_two',
                     'queues': ['high', 'default', 'low'],
-                    'state': 'busy'
+                    'state': 'busy',
+                    'successful_job_count': 4,
+                    'failed_job_count': 5,
+                    'total_working_time': 6
                 }
-            ]
+        ]
         )
 
     @patch('rq_exporter.utils.Worker')

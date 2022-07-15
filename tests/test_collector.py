@@ -20,6 +20,9 @@ class RQCollectorTestCase(unittest.TestCase):
 
     summary_metric = 'rq_request_processing_seconds'
     workers_metric = 'rq_workers'
+    workers_success_metric = 'rq_workers_success_total'
+    workers_failed_metric = 'rq_workers_failed_total'
+    workers_working_time_metric = 'rq_workers_working_time_total'
     jobs_metric = 'rq_jobs'
 
     def setUp(self):
@@ -117,12 +120,18 @@ class RQCollectorTestCase(unittest.TestCase):
             {
                 'name': 'worker_one',
                 'queues': ['default'],
-                'state': 'idle'
+                'state': 'idle',
+                'successful_job_count': 1,
+                'failed_job_count': 2,
+                'total_working_time': 3,
             },
             {
                 'name': 'worker_two',
                 'queues': ['high', 'default', 'low'],
-                'state': 'busy'
+                'state': 'busy',
+                'successful_job_count': 10,
+                'failed_job_count': 11,
+                'total_working_time': 12,
             }
         ]
 
@@ -164,6 +173,20 @@ class RQCollectorTestCase(unittest.TestCase):
                     }
                 )
             )
+
+            labels = {'name': w['name'], 'queues': ','.join(w['queues'])}
+            self.assertEqual(w['successful_job_count'], self.registry.get_sample_value(
+                self.workers_success_metric,
+                labels
+            ))
+            self.assertEqual(w['failed_job_count'], self.registry.get_sample_value(
+                self.workers_failed_metric,
+                labels
+            ))
+            self.assertEqual(w['total_working_time'], self.registry.get_sample_value(
+                self.workers_working_time_metric,
+                labels
+            ))
 
         for (queue, jobs) in jobs_by_queue.items():
             for (status, value) in jobs.items():
