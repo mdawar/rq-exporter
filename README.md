@@ -71,25 +71,28 @@ You can also find the [JSON file of the dashboard](https://github.com/mdawar/rq-
 **Note**:
 
 - This is just an example dashboard, feel free to use it as a base for your custom dashboard
-- You need to adjust the color thresholds to suit your needs for the job status percentage *singlestat* panels
+- You need to adjust the color thresholds to suit your needs for the job status percentage _singlestat_ panels
 - Some panels might seem duplicated providing percentages and current values, these are just for showcasing the PromQL queries
 
 ## Exported Metrics
 
 **RQ metrics:**
 
-Metric Name | Type | Labels | Description
------------ | ---- | ------ | -----------
-`rq_workers` | Gauge | `name`, `queues`, `state` | RQ workers
-`rq_jobs` | Gauge | `queue`, `status` | RQ jobs by queue and status
+| Metric Name                     | Type    | Labels                    | Description                             |
+| ------------------------------- | ------- | ------------------------- | --------------------------------------- |
+| `rq_workers`                    | Gauge   | `name`, `queues`, `state` | RQ workers                              |
+| `rq_jobs`                       | Gauge   | `queue`, `status`         | RQ jobs by queue and status             |
+| `rq_workers_success_total`      | Counter | `name`, `queues`          | Successful job count by worker          |
+| `rq_workers_failed_total`       | Counter | `name`, `queues`          | Failed job count by worker              |
+| `rq_workers_working_time_total` | Counter | `name`, `queues`          | Total working time in seconds by worker |
 
 **Request processing metrics:**
 
-Metric Name | Type | Description
------------ | ---- | -----------
-`rq_request_processing_seconds_count` | Summary | Number of times the RQ data were collected
-`rq_request_processing_seconds_sum` | Summary | Total sum of time spent collecting RQ data
-`rq_request_processing_seconds_created` | Gauge | Time created at (`time.time()` return value)
+| Metric Name                             | Type    | Description                                  |
+| --------------------------------------- | ------- | -------------------------------------------- |
+| `rq_request_processing_seconds_count`   | Summary | Number of times the RQ data were collected   |
+| `rq_request_processing_seconds_sum`     | Summary | Total sum of time spent collecting RQ data   |
+| `rq_request_processing_seconds_created` | Gauge   | Time created at (`time.time()` return value) |
 
 Example:
 
@@ -118,29 +121,29 @@ rq_jobs{queue="default", status="scheduled"} 2.0
 
 You can configure the exporter using command line arguments or environment variables:
 
-CLI Argument | Env Variable | Default Value | Description
------------- | ------------ | ------------- | -----------
-`--host` | `RQ_EXPORTER_HOST` | `0.0.0.0` | Serve the exporter on this host
-`-p`, `--port` | `RQ_EXPORTER_PORT` | `9726` | Serve the exporter on this port
-`--redis-url` | `RQ_REDIS_URL` | `None` | Redis URL in the form `redis://:[password]@[host]:[port]/[db]`
-`--redis-host` | `RQ_REDIS_HOST` | `localhost` | Redis host name
-`--redis-port` | `RQ_REDIS_PORT` | `6379` | Redis port number
-`--redis-db` | `RQ_REDIS_DB` | `0` | Redis database number
-`--sentinel-host` | `RQ_SENTINEL_HOST` | `None` | Redis Sentinel host
-`--sentinel-port` | `RQ_SENTINEL_PORT` | `26379` | Redis Sentinel port
-`--sentinel-master` | `RQ_SENTINEL_MASTER` | `master` | Redis Sentinel master name
-`--redis-pass` | `RQ_REDIS_PASS` | `None` | Redis password
-`--redis-pass-file` | `RQ_REDIS_PASS_FILE` | `None` |  Redis password file path (e.g. Path of a mounted Docker secret)
-`--worker-class` | `RQ_WORKER_CLASS` | `rq.Worker` | RQ worker class
-`--queue-class` | `RQ_QUEUE_CLASS` | `rq.Queue` | RQ queue class
-`--log-level` | `RQ_EXPORTER_LOG_LEVEL` | `INFO` | Logging level
-`--log-format` | `RQ_EXPORTER_LOG_FORMAT` | `[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s` | Logging handler format string
-`--log-datefmt` | `RQ_EXPORTER_LOG_DATEFMT` | `%Y-%m-%d %H:%M:%S` | Logging date/time format string
+| CLI Argument        | Env Variable              | Default Value                                           | Description                                                     |
+| ------------------- | ------------------------- | ------------------------------------------------------- | --------------------------------------------------------------- |
+| `--host`            | `RQ_EXPORTER_HOST`        | `0.0.0.0`                                               | Serve the exporter on this host                                 |
+| `-p`, `--port`      | `RQ_EXPORTER_PORT`        | `9726`                                                  | Serve the exporter on this port                                 |
+| `--redis-url`       | `RQ_REDIS_URL`            | `None`                                                  | Redis URL in the form `redis://:[password]@[host]:[port]/[db]`  |
+| `--redis-host`      | `RQ_REDIS_HOST`           | `localhost`                                             | Redis host name                                                 |
+| `--redis-port`      | `RQ_REDIS_PORT`           | `6379`                                                  | Redis port number                                               |
+| `--redis-db`        | `RQ_REDIS_DB`             | `0`                                                     | Redis database number                                           |
+| `--sentinel-host`   | `RQ_SENTINEL_HOST`        | `None`                                                  | Redis Sentinel host                                             |
+| `--sentinel-port`   | `RQ_SENTINEL_PORT`        | `26379`                                                 | Redis Sentinel port                                             |
+| `--sentinel-master` | `RQ_SENTINEL_MASTER`      | `master`                                                | Redis Sentinel master name                                      |
+| `--redis-pass`      | `RQ_REDIS_PASS`           | `None`                                                  | Redis password                                                  |
+| `--redis-pass-file` | `RQ_REDIS_PASS_FILE`      | `None`                                                  | Redis password file path (e.g. Path of a mounted Docker secret) |
+| `--worker-class`    | `RQ_WORKER_CLASS`         | `rq.Worker`                                             | RQ worker class                                                 |
+| `--queue-class`     | `RQ_QUEUE_CLASS`          | `rq.Queue`                                              | RQ queue class                                                  |
+| `--log-level`       | `RQ_EXPORTER_LOG_LEVEL`   | `INFO`                                                  | Logging level                                                   |
+| `--log-format`      | `RQ_EXPORTER_LOG_FORMAT`  | `[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s` | Logging handler format string                                   |
+| `--log-datefmt`     | `RQ_EXPORTER_LOG_DATEFMT` | `%Y-%m-%d %H:%M:%S`                                     | Logging date/time format string                                 |
 
 **Note**:
 
-* When Redis URL is set using `--redis-url` or `RQ_REDIS_URL` the other Redis options will be ignored
-* When the Redis password is set using `--redis-pass-file` or `RQ_REDIS_PASS_FILE`, then `--redis-pass` and `RQ_REDIS_PASS` will be ignored
+- When Redis URL is set using `--redis-url` or `RQ_REDIS_URL` the other Redis options will be ignored
+- When the Redis password is set using `--redis-pass-file` or `RQ_REDIS_PASS_FILE`, then `--redis-pass` and `RQ_REDIS_PASS` will be ignored
 
 ## Serving with Gunicorn
 
@@ -170,9 +173,9 @@ CMD ["-b", "0.0.0.0:9726", "--threads", "2", "--log-level", "info", "--keep-aliv
 
 The exporter is going to work without any problems with multiple workers but you will get different values for these metrics:
 
-* `rq_request_processing_seconds_count`
-* `rq_request_processing_seconds_sum`
-* `rq_request_processing_seconds_created`
+- `rq_request_processing_seconds_count`
+- `rq_request_processing_seconds_sum`
+- `rq_request_processing_seconds_created`
 
 This is fine if you don't care about these metrics, these are only for measuring the count and time processing the RQ data, so the other RQ metrics are not going to be affected.
 
@@ -253,7 +256,7 @@ $ # To cleanup you need to also pass the same files
 $ docker-compose -f docker-compose.yml -f docker-compose.custom.yml down
 ```
 
-A new **RQ exporter** instance will be exposed  on port `9727` on your local machine.
+A new **RQ exporter** instance will be exposed on port `9727` on your local machine.
 
 **Note**: If you don't have `docker-compose` installed follow the [installation](https://docs.docker.com/compose/install/) instructions on the official website.
 
