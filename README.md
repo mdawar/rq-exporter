@@ -216,11 +216,11 @@ $ docker-compose --compatibility up
 
 You can access the services on these ports on your local machine:
 
-- **RQ exporter**: `9726`
-- **Redis**: `6379`
-- **RQ Dashboard**: `9181`
-- **Prometheus**: `9090`
-- **Grafana**: `3000` (Login using `admin:admin`)
+- **RQ exporter**: [`9726`](http://localhost:9726)
+- **Redis**: [`6379`](http://localhost:6379)
+- **RQ Dashboard**: [`9181`](http://localhost:9181)
+- **Prometheus**: [`9090`](http://localhost:9090)
+- **Grafana**: [`3000`](http://localhost:3000) (Login using `admin:admin`)
 
 You can specify the services that you want to start by their name in the `docker-compose.yml` file:
 
