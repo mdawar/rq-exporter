@@ -45,7 +45,14 @@ def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
             password = f.read().strip()
 
     if sentinel:
-        addr_list = [(url, sentinel_port) for url in sentinel.split(",")]
+        addr_list = [
+            (
+                url.split(':')[0],
+                url.split(':')[1] if ':' in url else sentinel_port
+            )
+            for url in sentinel.split(",")
+        ]
+
         sentinel = Sentinel(addr_list, socket_timeout=1)
         return sentinel.master_for(sentinel_master, socket_timeout=1, db=db)
 

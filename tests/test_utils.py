@@ -55,14 +55,66 @@ class GetRedisConnectionTestCase(unittest.TestCase):
 
     @patch('builtins.open', mock_open())
     def test_creating_redis_connection_with_sentinel(self):
-        """When the `sentinel` argument is  set the connection must be created from the sentinel."""
+        """When the `sentinel` argument is set the connection must be created from the sentinel."""
         with patch('rq_exporter.utils.Sentinel') as Sentinel:
             connection = get_redis_connection(
                 sentinel = '127.0.0.1',
                 sentinel_port = '26379',
                 sentinel_master = 'mymaster'
             )
-            Sentinel().master_for.assert_called_with('mymaster', db='0', socket_timeout=1)
+
+            Sentinel.assert_called_once_with([('127.0.0.1', '26379')], socket_timeout=1)
+            Sentinel().master_for.assert_called_once_with('mymaster', db='0', socket_timeout=1)
+
+            open.assert_not_called()
+
+            self.assertEqual(connection, Sentinel().master_for.return_value)
+
+    @patch('builtins.open', mock_open())
+    def test_creating_redis_connection_with_sentinel_port_with_hostname(self):
+        """The port provided with the hostname argument `sentinel` must be used instead of `sentinel_port`."""
+        with patch('rq_exporter.utils.Sentinel') as Sentinel:
+            connection = get_redis_connection(
+                sentinel = '127.0.0.1:26380',
+            )
+
+            Sentinel.assert_called_once_with([('127.0.0.1', '26380')], socket_timeout=1)
+
+            open.assert_not_called()
+
+            self.assertEqual(connection, Sentinel().master_for.return_value)
+
+    @patch('builtins.open', mock_open())
+    def test_creating_redis_connection_with_multiple_sentinel_hosts(self):
+        """Test passing mutliple Sentinel hosts using the `sentinel` argument."""
+        with patch('rq_exporter.utils.Sentinel') as Sentinel:
+            connection = get_redis_connection(
+                sentinel = '127.0.0.1,sentinel2,example.com',
+            )
+
+            Sentinel.assert_called_once_with([
+                ('127.0.0.1', '26379'),
+                ('sentinel2', '26379'),
+                ('example.com', '26379')
+            ], socket_timeout=1)
+
+            open.assert_not_called()
+
+            self.assertEqual(connection, Sentinel().master_for.return_value)
+
+    @patch('builtins.open', mock_open())
+    def test_creating_redis_connection_with_multiple_sentinel_hosts_and_ports(self):
+        """Test passing mutliple Sentinel hosts with different ports using the `sentinel` argument."""
+        with patch('rq_exporter.utils.Sentinel') as Sentinel:
+            connection = get_redis_connection(
+                sentinel = '127.0.0.1:26380,sentinel2,example.com:26381',
+            )
+
+            Sentinel.assert_called_once_with([
+                ('127.0.0.1', '26380'),
+                ('sentinel2', '26379'), # Default port when not specified
+                ('example.com', '26381')
+            ], socket_timeout=1)
 
             open.assert_not_called()
 
