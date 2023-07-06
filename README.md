@@ -13,20 +13,20 @@ Prometheus metrics exporter for Python RQ (Redis Queue) job queue library.
 
 Install the Python package:
 
-```console
+```sh
 $ # Install the latest version
 $ pip install rq-exporter
-$ # Or you can install a specific version
-$ pip install rq-exporter==1.0.0
+$ # Or install a specific version
+$ pip install rq-exporter==2.1.0
 ```
 
 Or download the [Docker image](https://hub.docker.com/r/mdawar/rq-exporter):
 
-```console
+```sh
 $ # Pull the latest image
 $ docker pull mdawar/rq-exporter
-$ # Or you can pull a specific version
-$ docker pull mdawar/rq-exporter:v1.0.0
+$ # Or pull a specific version
+$ docker pull mdawar/rq-exporter:v2.1.0
 ```
 
 The releases are available as [Docker image tags](https://hub.docker.com/r/mdawar/rq-exporter/tags).
@@ -35,7 +35,7 @@ The releases are available as [Docker image tags](https://hub.docker.com/r/mdawa
 
 **Python package**:
 
-```console
+```sh
 $ # Start the exporter on port 9726
 $ rq-exporter
 $ # Start the exporter on a specific port and host (Default: 0.0.0.0:9726)
@@ -51,7 +51,7 @@ $ rq-exporter --redis-pass-file /run/secrets/redis_pass
 
 **Docker image**:
 
-```console
+```sh
 $ # Run the exporter and publish the port 9726 on the host
 $ docker run -it -p 9726:9726 rq-exporter
 $ # Use the -d option to run the container in the background (detached)
@@ -96,7 +96,7 @@ You can also find the [JSON file of the dashboard](https://github.com/mdawar/rq-
 
 Example:
 
-```bash
+```sh
 # HELP rq_request_processing_seconds Time spent collecting RQ data
 # TYPE rq_request_processing_seconds summary
 rq_request_processing_seconds_count 1.0
@@ -121,35 +121,36 @@ rq_jobs{queue="default", status="scheduled"} 2.0
 
 You can configure the exporter using command line arguments or environment variables:
 
-| CLI Argument        | Env Variable              | Default Value                                           | Description                                                     |
-| ------------------- | ------------------------- | ------------------------------------------------------- | --------------------------------------------------------------- |
-| `--host`            | `RQ_EXPORTER_HOST`        | `0.0.0.0`                                               | Serve the exporter on this host                                 |
-| `-p`, `--port`      | `RQ_EXPORTER_PORT`        | `9726`                                                  | Serve the exporter on this port                                 |
-| `--redis-url`       | `RQ_REDIS_URL`            | `None`                                                  | Redis URL in the form `redis://:[password]@[host]:[port]/[db]`  |
-| `--redis-host`      | `RQ_REDIS_HOST`           | `localhost`                                             | Redis host name                                                 |
-| `--redis-port`      | `RQ_REDIS_PORT`           | `6379`                                                  | Redis port number                                               |
-| `--redis-db`        | `RQ_REDIS_DB`             | `0`                                                     | Redis database number                                           |
-| `--sentinel-host`   | `RQ_SENTINEL_HOST`        | `None`                                                  | Redis Sentinel host                                             |
-| `--sentinel-port`   | `RQ_SENTINEL_PORT`        | `26379`                                                 | Redis Sentinel port                                             |
-| `--sentinel-master` | `RQ_SENTINEL_MASTER`      | `master`                                                | Redis Sentinel master name                                      |
-| `--redis-pass`      | `RQ_REDIS_PASS`           | `None`                                                  | Redis password                                                  |
-| `--redis-pass-file` | `RQ_REDIS_PASS_FILE`      | `None`                                                  | Redis password file path (e.g. Path of a mounted Docker secret) |
-| `--worker-class`    | `RQ_WORKER_CLASS`         | `rq.Worker`                                             | RQ worker class                                                 |
-| `--queue-class`     | `RQ_QUEUE_CLASS`          | `rq.Queue`                                              | RQ queue class                                                  |
-| `--log-level`       | `RQ_EXPORTER_LOG_LEVEL`   | `INFO`                                                  | Logging level                                                   |
-| `--log-format`      | `RQ_EXPORTER_LOG_FORMAT`  | `[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s` | Logging handler format string                                   |
-| `--log-datefmt`     | `RQ_EXPORTER_LOG_DATEFMT` | `%Y-%m-%d %H:%M:%S`                                     | Logging date/time format string                                 |
+| CLI Argument        | Env Variable              | Default Value                                           | Description                                                              |
+| ------------------- | ------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `--host`            | `RQ_EXPORTER_HOST`        | `0.0.0.0`                                               | Serve the exporter on this host                                          |
+| `-p`, `--port`      | `RQ_EXPORTER_PORT`        | `9726`                                                  | Serve the exporter on this port                                          |
+| `--redis-url`       | `RQ_REDIS_URL`            | `None`                                                  | Redis URL in the form `redis://:[password]@[host]:[port]/[db]`           |
+| `--redis-host`      | `RQ_REDIS_HOST`           | `localhost`                                             | Redis host name                                                          |
+| `--redis-port`      | `RQ_REDIS_PORT`           | `6379`                                                  | Redis port number                                                        |
+| `--redis-db`        | `RQ_REDIS_DB`             | `0`                                                     | Redis database number                                                    |
+| `--sentinel-host`   | `RQ_SENTINEL_HOST`        | `None`                                                  | Redis Sentinel hosts separated by commas e.g `sentinel1,sentinel2:26380` |
+| `--sentinel-port`   | `RQ_SENTINEL_PORT`        | `26379`                                                 | Redis Sentinel port, default port used when not set with the host        |
+| `--sentinel-master` | `RQ_SENTINEL_MASTER`      | `master`                                                | Redis Sentinel master name                                               |
+| `--redis-pass`      | `RQ_REDIS_PASS`           | `None`                                                  | Redis password                                                           |
+| `--redis-pass-file` | `RQ_REDIS_PASS_FILE`      | `None`                                                  | Redis password file path (e.g. Path of a mounted Docker secret)          |
+| `--worker-class`    | `RQ_WORKER_CLASS`         | `rq.Worker`                                             | RQ worker class                                                          |
+| `--queue-class`     | `RQ_QUEUE_CLASS`          | `rq.Queue`                                              | RQ queue class                                                           |
+| `--log-level`       | `RQ_EXPORTER_LOG_LEVEL`   | `INFO`                                                  | Logging level                                                            |
+| `--log-format`      | `RQ_EXPORTER_LOG_FORMAT`  | `[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s` | Logging handler format string                                            |
+| `--log-datefmt`     | `RQ_EXPORTER_LOG_DATEFMT` | `%Y-%m-%d %H:%M:%S`                                     | Logging date/time format string                                          |
 
-**Note**:
+**Notes**:
 
 - When Redis URL is set using `--redis-url` or `RQ_REDIS_URL` the other Redis options will be ignored
 - When the Redis password is set using `--redis-pass-file` or `RQ_REDIS_PASS_FILE`, then `--redis-pass` and `RQ_REDIS_PASS` will be ignored
+- The Sentinel port will default to the value of `--sentinel-port` if not set for each host with `--sentinel-host` or `RQ_SENTINEL_HOST`
 
 ## Serving with Gunicorn
 
 The WSGI application can be created using the `rq_exporter.create_app()` function:
 
-```console
+```sh
 $ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:9726 --log-level info
 ```
 
@@ -181,37 +182,39 @@ This is fine if you don't care about these metrics, these are only for measuring
 
 But you can still use multiple threads with 1 worker process to handle multiple concurrent requests:
 
-```console
+```sh
 $ gunicorn "rq_exporter:create_app()" -b 0.0.0.0:9726 --threads 2
 ```
 
 ## Building the Docker Image
 
-```console
+```sh
 $ # Build the docker image and tag it rq-exporter:latest
 $ docker build -t rq-exporter .
+$ # Or
+$ make build
 
-$ # M1 MacOs Build the docker image and tag it rq-exporter:latest
+$ # M1 MacOS Build the docker image and tag it rq-exporter:latest
 $ docker buildx build --platform linux/amd64 -t rq-exporter .
 ```
 
-The image can also be built using `docker-compose`:
+The image can also be built using `docker compose`:
 
-```console
-$ docker-compose build
+```sh
+$ docker compose build
 ```
 
-Check out the `docker-compose.yml` file for usage example.
+Check the `docker-compose.yml` file for usage example.
 
 ## Development
 
 To start a full development environment with **RQ** workers, **Prometheus** and **Grafana**:
 
-```console
-$ docker-compose up
+```sh
+$ docker compose up
 $ # If you want to start multiple workers use the --compatibility flag
-$ # which will make docker-compose read the `deploy` section and start multiple replicas
-$ docker-compose --compatibility up
+$ # which will make docker compose read the `deploy` section and start multiple replicas
+$ docker compose --compatibility up
 ```
 
 You can access the services on these ports on your local machine:
@@ -224,45 +227,45 @@ You can access the services on these ports on your local machine:
 
 You can specify the services that you want to start by their name in the `docker-compose.yml` file:
 
-```console
+```sh
 $ # Example starting only the `rq_exporter` and `redis` services
-$ docker-compose up rq_exporter redis
+$ docker compose up rq_exporter redis
 ```
 
 To run more workers and enqueue more jobs you can scale the `worker` and `enqueue` services:
 
-```console
+```sh
 $ # Run 5 workers
-$ docker-compose up -d --scale worker=5
+$ docker compose up -d --scale worker=5
 $ # Enqueue more jobs
 $ # Scale the enqueue service and the workers
-$ docker-compose up -d --scale worker=5 --scale enqueue=2
+$ docker compose up -d --scale worker=5 --scale enqueue=2
 ```
 
 To cleanup after development:
 
-```console
+```sh
 $ # Use -v to remove volumes
-$ docker-compose down -v
+$ docker compose down -v
 ```
 
 You can also start another `rq-exporter` instance that collects stats from a project using custom **RQ** `Worker` and `Queue` classes:
 
-```console
+```sh
 $ # Using -f to pass multiple docker-compose files
 $ # docker-compose.custom.yml defines services using custom RQ classes
-$ docker-compose -f docker-compose.yml -f docker-compose.custom.yml up
+$ docker compose -f docker-compose.yml -f docker-compose.custom.yml up
 $ # To cleanup you need to also pass the same files
-$ docker-compose -f docker-compose.yml -f docker-compose.custom.yml down
+$ docker compose -f docker-compose.yml -f docker-compose.custom.yml down
 ```
 
 A new **RQ exporter** instance will be exposed on port `9727` on your local machine.
 
-**Note**: If you don't have `docker-compose` installed follow the [installation](https://docs.docker.com/compose/install/) instructions on the official website.
+**Note**: If you don't have `docker compose` installed follow the [installation](https://docs.docker.com/compose/install/) instructions on the official website.
 
 If you want to use the package manually:
 
-```console
+```sh
 $ # Clone the repository
 $ git clone <REPO_URL>
 $ # Change to the project directory
@@ -281,7 +284,9 @@ $ python -m rq_exporter --port 8080
 
 ## Running the Tests
 
-```console
+```sh
+$ make test
+$ # Or
 $ python -m unittest
 ```
 
