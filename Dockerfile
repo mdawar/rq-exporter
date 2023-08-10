@@ -1,4 +1,4 @@
-FROM python:3.8-slim-bookworm
+FROM python:3.9-slim-bookworm
 
 # Create a user and a group
 RUN groupadd -r exporter && useradd -r -g exporter exporter -u 999
