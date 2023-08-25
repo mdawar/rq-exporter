@@ -16,6 +16,9 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy the build context (defined in .dockerignore)
 COPY . /app
 
+# Copy the patched registry file
+COPY /rq_exporter/patch/. /usr/local/lib/python3.9/site-packages/rq
+
 USER 999
 
 ENTRYPOINT ["python", "-m", "rq_exporter"]
