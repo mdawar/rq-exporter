@@ -298,3 +298,12 @@ $ python -m unittest
 4. Make changes and add tests if needed and commit your changes `git commit -am "Your commit message"`
 5. Push the new branch to Github `git push origin <BRANCH_NAME>`
 6. Create a pull request
+
+## Byrdification
+
+Several customisations exists to make this run with minimal permissions.
+If you run this "Out the Box" then several write permissions are requested which we wanted to avoid.
+
+1. `rq.workers` is monkeypatched to avoid the need for `srem` permissions
+2. `rq.queue` calls `rq.registry`. I couldn't work out how to monkeypatch the chain so we just copy the edited registry module during the docker build to avoid the need for `zremrangebyscore` and `match` permissions
+3. Permissions for the user needs to be: `+@READ +get +select allkeys`
