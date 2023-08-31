@@ -303,7 +303,10 @@ $ python -m unittest
 
 Several customisations exists to make this run with minimal permissions.
 If you run this "Out the Box" then several write permissions are requested which we wanted to avoid.
+I tried monkeypatching but there is a chain of dependants so it didnt work.
 
-1. `rq.workers` is monkeypatched to avoid the need for `srem` permissions
-2. `rq.queue` calls `rq.registry`. I couldn't work out how to monkeypatch the chain so we just copy the edited registry module during the docker build to avoid the need for `zremrangebyscore` and `match` permissions
-3. Permissions for the user needs to be: `+@READ +get +select allkeys`
+We simply copy the edited/patched files in the Dockerfile to replace the real files in the rq library
+
+1. `rq.workers` edited to avoid the need for `srem` permissions
+2. `rq.queue` calls `rq.registry` which we edit to avoid the need for `zremrangebyscore` and `match` permissions
+3. Permissions for the user needs to be: `on ~* -@all +@read +select`
