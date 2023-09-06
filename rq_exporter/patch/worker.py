@@ -745,9 +745,6 @@ class Worker(BaseWorker):
 
         if connection is None:
             connection = get_current_connection()
-        if not connection.exists(worker_key):
-            connection.srem(cls.redis_workers_keys, worker_key)
-            return None
 
         name = worker_key[len(prefix) :]
         worker = cls(
