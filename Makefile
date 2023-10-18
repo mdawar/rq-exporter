@@ -1,4 +1,5 @@
 test:
+	safety check
 	python -m unittest
 
 build:
