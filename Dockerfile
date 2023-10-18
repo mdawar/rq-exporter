@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bookworm
+FROM python:3.11-slim-bookworm
 
 # Create a user and a group
 RUN groupadd -g 999 -r exporter && useradd -r -g exporter exporter -u 999
@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY . /app
 
 # Copy the patched files
-COPY /rq_exporter/patch/. /usr/local/lib/python3.9/site-packages/rq
+COPY /rq_exporter/patch/. /usr/local/lib/python3.11/site-packages/rq
 
 USER 999
 

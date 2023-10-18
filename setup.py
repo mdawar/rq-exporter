@@ -34,9 +34,7 @@ setup(
     packages = ['rq_exporter'],
     classifiers = [
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.11',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Intended Audience :: Developers',
@@ -44,7 +42,7 @@ setup(
         'Intended Audience :: System Administrators',
         'Topic :: System :: Monitoring'
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.11',
     entry_points = {
         'console_scripts': ['rq-exporter = rq_exporter.__main__:main']
     }
