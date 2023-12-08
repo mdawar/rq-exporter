@@ -113,7 +113,8 @@ def get_queue_jobs(queue_name, queue_class=None):
         JobStatus.FINISHED: queue.finished_job_registry.count,
         JobStatus.FAILED: queue.failed_job_registry.count,
         JobStatus.DEFERRED: queue.deferred_job_registry.count,
-        JobStatus.SCHEDULED: queue.scheduled_job_registry.count
+        JobStatus.SCHEDULED: queue.scheduled_job_registry.count,
+        JobStatus.CANCELED: queue.canceled_job_registry.count,
     }
 
 
