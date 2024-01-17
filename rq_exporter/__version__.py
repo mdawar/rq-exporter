@@ -1,4 +1,4 @@
-__version__ = '2.1.1'
+__version__ = '2.1.2'
 __url__ = 'https://github.com/mdawar/rq-exporter'
 __description__ = 'Prometheus exporter for Python RQ (Redis Queue)'
 __author__ = 'Pierre Mdawar'
