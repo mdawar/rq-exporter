@@ -56,7 +56,7 @@ def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
         return Sentinel(
             addr_list,
             sentinel_kwargs={'password': password, 'socket_timeout': 1}
-        ).master_for(sentinel_master, socket_timeout=1, db=db)
+        ).master_for(sentinel_master, password=password, db=db, socket_timeout=1)
 
     return Redis(host=host, port=port, db=db, password=password)
 

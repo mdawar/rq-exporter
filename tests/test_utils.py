@@ -70,6 +70,7 @@ class GetRedisConnectionTestCase(unittest.TestCase):
 
             Sentinel().master_for.assert_called_once_with(
                 'mymaster',
+                password=None,
                 db='0',
                 socket_timeout=1
             )
@@ -84,11 +85,19 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         with patch('rq_exporter.utils.Sentinel') as Sentinel:
             connection = get_redis_connection(
                 sentinel='127.0.0.1:26380',
+                sentinel_master='mymaster'
             )
 
             Sentinel.assert_called_once_with(
                 [('127.0.0.1', '26380')],
                 sentinel_kwargs={'password': None, 'socket_timeout': 1}
+            )
+
+            Sentinel().master_for.assert_called_once_with(
+                'mymaster',
+                password=None,
+                db='0',
+                socket_timeout=1
             )
 
             open.assert_not_called()
@@ -101,6 +110,7 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         with patch('rq_exporter.utils.Sentinel') as Sentinel:
             connection = get_redis_connection(
                 sentinel='127.0.0.1,sentinel2,example.com',
+                sentinel_master='mymaster'
             )
 
             Sentinel.assert_called_once_with(
@@ -110,6 +120,13 @@ class GetRedisConnectionTestCase(unittest.TestCase):
                     ('example.com', '26379')
                 ],
                 sentinel_kwargs={'password': None, 'socket_timeout': 1}
+            )
+
+            Sentinel().master_for.assert_called_once_with(
+                'mymaster',
+                password=None,
+                db='0',
+                socket_timeout=1
             )
 
             open.assert_not_called()
@@ -122,6 +139,7 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         with patch('rq_exporter.utils.Sentinel') as Sentinel:
             connection = get_redis_connection(
                 sentinel='127.0.0.1:26380,sentinel2,example.com:26381',
+                sentinel_master='mymaster'
             )
 
             Sentinel.assert_called_once_with(
@@ -131,6 +149,13 @@ class GetRedisConnectionTestCase(unittest.TestCase):
                     ('example.com', '26381')
                 ],
                 sentinel_kwargs={'password': None, 'socket_timeout': 1}
+            )
+
+            Sentinel().master_for.assert_called_once_with(
+                'mymaster',
+                password=None,
+                db='0',
+                socket_timeout=1
             )
 
             open.assert_not_called()
@@ -143,12 +168,20 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         with patch('rq_exporter.utils.Sentinel') as Sentinel:
             connection = get_redis_connection(
                 sentinel='127.0.0.1:26380',
+                sentinel_master='mymaster',
                 password='123456'
             )
 
             Sentinel.assert_called_once_with(
                 [('127.0.0.1', '26380')],
                 sentinel_kwargs={'password': '123456', 'socket_timeout': 1}
+            )
+
+            Sentinel().master_for.assert_called_once_with(
+                'mymaster',
+                password='123456',
+                db='0',
+                socket_timeout=1
             )
 
             open.assert_not_called()
@@ -161,6 +194,7 @@ class GetRedisConnectionTestCase(unittest.TestCase):
         with patch('rq_exporter.utils.Sentinel') as Sentinel:
             connection = get_redis_connection(
                 sentinel='127.0.0.1:26380',
+                sentinel_master='mymaster',
                 password='123456',
                 password_file='/path/to/redis_pass'
             )
@@ -168,6 +202,13 @@ class GetRedisConnectionTestCase(unittest.TestCase):
             Sentinel.assert_called_once_with(
                 [('127.0.0.1', '26380')],
                 sentinel_kwargs={'password': 'FILEPASS', 'socket_timeout': 1}
+            )
+
+            Sentinel().master_for.assert_called_once_with(
+                'mymaster',
+                password='FILEPASS',
+                db='0',
+                socket_timeout=1
             )
 
             open.assert_called_with('/path/to/redis_pass', 'r')
