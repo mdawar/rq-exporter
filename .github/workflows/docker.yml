@@ -1,9 +1,9 @@
 name: Build Docker Image
 
 on:
-  push:
-    tags:
-      - v*
+  release:
+    types:
+      - published
 
 jobs:
   build:
@@ -12,14 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set GIT_TAG env variable
-        if: startsWith(github.ref, 'refs/tags/')
-        run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
       - name: Build image
         env:
           DOCKER_BUILDKIT: 1
-        run: docker build . -t ${{ secrets.DOCKER_USER }}/rq-exporter:latest -t ${{ secrets.DOCKER_USER }}/rq-exporter:${GIT_TAG}
+        run: docker build . -t ${{ secrets.DOCKER_USER }}/rq-exporter:latest -t ${{ secrets.DOCKER_USER }}/rq-exporter:${{ github.ref_name }}
 
       - name: Run the tests
         run: docker run --rm --entrypoint python ${{ secrets.DOCKER_USER }}/rq-exporter:latest -m unittest
@@ -28,4 +24,4 @@ jobs:
         run: |
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push ${{ secrets.DOCKER_USER }}/rq-exporter:latest
-          docker push ${{ secrets.DOCKER_USER }}/rq-exporter:${GIT_TAG}
+          docker push ${{ secrets.DOCKER_USER }}/rq-exporter:${{ github.ref_name }}
