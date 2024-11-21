@@ -41,10 +41,16 @@ class RQCollectorTestCase(unittest.TestCase):
         # Create a similar default values tuple and replace the default `registry` argument with a mock
         # Mocking `prometheus_client.metrics.REGISTRY` doesn't work as expected because default arguments
         # are evaluated at definition time
-        new_default_args = tuple(self.registry if isinstance(arg, CollectorRegistry) else arg for arg in default_args)
+        new_default_args = tuple(
+            self.registry if isinstance(arg, CollectorRegistry)
+            else arg for arg in default_args
+        )
 
         # Patch the default Summary class arguments
-        patch('prometheus_client.metrics.Summary.__init__.__defaults__', new_default_args).start()
+        patch(
+            'prometheus_client.metrics.Summary.__init__.__defaults__',
+            new_default_args
+        ).start()
 
         # On cleanup call patch.stopall
         self.addCleanup(patch.stopall)
@@ -56,22 +62,33 @@ class RQCollectorTestCase(unittest.TestCase):
         with self.assertRaises(ValueError) as error:
             RQCollector()
 
-        self.assertTrue('Duplicated timeseries in CollectorRegistry' in str(error.exception))
+        self.assertTrue(
+            'Duplicated timeseries in CollectorRegistry' in
+            str(error.exception)
+        )
 
     def test_summary_metric(self, get_workers_stats, get_jobs_by_queue):
         """Test the summary metric that tracks the requests count and time."""
         collector = RQCollector()
 
         # Initial values before calling the `collect` method
-        self.assertEqual(0, self.registry.get_sample_value(f'{self.summary_metric}_count'))
-        self.assertEqual(0, self.registry.get_sample_value(f'{self.summary_metric}_sum'))
+        self.assertEqual(0, self.registry.get_sample_value(
+            f'{self.summary_metric}_count')
+        )
+        self.assertEqual(0, self.registry.get_sample_value(
+            f'{self.summary_metric}_sum')
+        )
 
         # The `collect` method is a generator
         # Exhaust the generator to get the recorded samples
         list(collector.collect())
 
-        self.assertEqual(1, self.registry.get_sample_value(f'{self.summary_metric}_count'))
-        self.assertTrue(self.registry.get_sample_value(f'{self.summary_metric}_sum') > 0)
+        self.assertEqual(1, self.registry.get_sample_value(
+            f'{self.summary_metric}_count')
+        )
+        self.assertTrue(self.registry.get_sample_value(
+            f'{self.summary_metric}_sum') > 0
+        )
 
     def test_passed_connection_is_used(self, get_workers_stats, get_jobs_by_queue):
         """Test that the connection passed to `RQCollector` is used to get the workers and jobs."""
@@ -81,28 +98,30 @@ class RQCollectorTestCase(unittest.TestCase):
         connection = Mock()
         collector = RQCollector(connection)
 
-        with patch('rq_exporter.collector.Connection') as Connection:
-            list(collector.collect())
+        list(collector.collect())
 
-        Connection.assert_called_once_with(connection)
-        get_workers_stats.assert_called_once_with(None)
-        get_jobs_by_queue.assert_called_once_with(None)
+        get_workers_stats.assert_called_once_with(connection, None)
+        get_jobs_by_queue.assert_called_once_with(connection, None)
 
     def test_passed_rq_classes_are_used(self, get_workers_stats, get_jobs_by_queue):
         """Test that the RQ classes passed to `RQCollector` are used to get the workers and jobs."""
         get_workers_stats.return_value = []
         get_jobs_by_queue.return_value = {}
 
+        connection = Mock()
         worker_class = Mock()
         queue_class = Mock()
 
-        collector = RQCollector(worker_class=worker_class, queue_class=queue_class)
+        collector = RQCollector(
+            connection=connection,
+            worker_class=worker_class,
+            queue_class=queue_class
+        )
 
-        with patch('rq_exporter.collector.Connection') as Connection:
-            list(collector.collect())
+        list(collector.collect())
 
-        get_workers_stats.assert_called_once_with(worker_class)
-        get_jobs_by_queue.assert_called_once_with(queue_class)
+        get_workers_stats.assert_called_once_with(connection, worker_class)
+        get_jobs_by_queue.assert_called_once_with(connection, queue_class)
 
     def test_metrics_with_empty_data(self, get_workers_stats, get_jobs_by_queue):
         """Test the workers and jobs metrics when there's no data."""
@@ -111,8 +130,12 @@ class RQCollectorTestCase(unittest.TestCase):
 
         self.registry.register(RQCollector())
 
-        self.assertEqual(None, self.registry.get_sample_value(self.workers_metric))
-        self.assertEqual(None, self.registry.get_sample_value(self.jobs_metric))
+        self.assertEqual(
+            None, self.registry.get_sample_value(self.workers_metric)
+        )
+        self.assertEqual(
+            None, self.registry.get_sample_value(self.jobs_metric)
+        )
 
     def test_metrics_with_data(self, get_workers_stats, get_jobs_by_queue):
         """Test the workers and jobs metrics when there is data available."""
@@ -157,22 +180,23 @@ class RQCollectorTestCase(unittest.TestCase):
         get_workers_stats.return_value = workers
         get_jobs_by_queue.return_value = jobs_by_queue
 
-        # On registration the `collect` method is called
-        self.registry.register(RQCollector())
+        connection = Mock()
 
-        get_workers_stats.assert_called_once_with(None)
-        get_jobs_by_queue.assert_called_once_with(None)
+        # On registration the `collect` method is called
+        self.registry.register(RQCollector(connection))
+
+        get_workers_stats.assert_called_once_with(connection, None)
+        get_jobs_by_queue.assert_called_once_with(connection, None)
 
         for w in workers:
             self.assertEqual(1, self.registry.get_sample_value(
-                    self.workers_metric,
-                    {
-                        'name': w['name'],
-                        'state': w['state'],
-                        'queues': ','.join(w['queues'])
-                    }
-                )
-            )
+                self.workers_metric,
+                {
+                    'name': w['name'],
+                    'state': w['state'],
+                    'queues': ','.join(w['queues'])
+                }
+            ))
 
             labels = {'name': w['name'], 'queues': ','.join(w['queues'])}
             self.assertEqual(w['successful_job_count'], self.registry.get_sample_value(

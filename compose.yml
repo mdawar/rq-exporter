@@ -1,11 +1,8 @@
-version: '3.7'
-
 volumes:
   grafana_data:
     driver: local
 
 services:
-
   rq_exporter:
     build:
       context: .
@@ -19,8 +16,8 @@ services:
         protocol: tcp
         mode: host
     environment:
-      RQ_REDIS_HOST: "redis"
-      RQ_REDIS_PASS: "123456"
+      RQ_REDIS_HOST: 'redis'
+      RQ_REDIS_PASS: '123456'
     volumes:
       # Mount the package for development
       - type: bind
@@ -30,7 +27,7 @@ services:
       - redis
 
   redis:
-    image: redis:5.0-alpine
+    image: redis:7.4-alpine
     ports:
       - target: 6379
         published: 6379
@@ -44,7 +41,7 @@ services:
 
   # RQ workers
   # To run multiple replicas use:
-  # docker-compose --compatibility up
+  # docker compose --compatibility up
   worker:
     image: mdawar/rq-exporter:latest
     entrypoint: []
@@ -53,7 +50,7 @@ services:
     volumes:
       # Mount a sample project
       - type: bind
-        source: ./docker-compose/project
+        source: ./compose/project
         target: /home/worker
     depends_on:
       - redis
@@ -67,13 +64,13 @@ services:
     entrypoint: []
     command: python -u enqueue.py
     environment:
-      RQ_REDIS_HOST: "redis"
-      RQ_REDIS_PASS: "123456"
+      RQ_REDIS_HOST: 'redis'
+      RQ_REDIS_PASS: '123456'
     working_dir: /home/enqueue
     volumes:
       # Mount a sample project
       - type: bind
-        source: ./docker-compose/project
+        source: ./compose/project
         target: /home/enqueue
     depends_on:
       - redis
@@ -93,7 +90,7 @@ services:
       - redis
 
   prometheus:
-    image: prom/prometheus:v2.17.2
+    image: prom/prometheus:v2.55.1
     ports:
       - target: 9090
         published: 9090
@@ -102,11 +99,11 @@ services:
     volumes:
       # Prometheus config file
       - type: bind
-        source: ./docker-compose/prometheus.yml
+        source: ./compose/prometheus.yml
         target: /etc/prometheus/prometheus.yml
 
   grafana:
-    image: grafana/grafana:6.7.3
+    image: grafana/grafana-oss:11.3.1
     ports:
       - target: 3000
         published: 3000
@@ -119,12 +116,12 @@ services:
       # Grafana datasources
       # https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources
       - type: bind
-        source: ./docker-compose/grafana-datasources.yml
+        source: ./compose/grafana-datasources.yml
         target: /etc/grafana/provisioning/datasources/datasources.yaml
       # Grafana dashboards config
       # https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
       - type: bind
-        source: ./docker-compose/grafana-dashboards.yml
+        source: ./compose/grafana-dashboards.yml
         target: /etc/grafana/provisioning/dashboards/dashboards.yaml
       # # RQ dashboard
       - type: bind

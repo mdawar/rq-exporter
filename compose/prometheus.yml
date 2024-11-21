@@ -12,5 +12,5 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets:
-        - rq_exporter:9726
-        - rq_exporter_custom_classes:9726
+          - rq_exporter:9726
+          - rq_exporter_custom_classes:9726

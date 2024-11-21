@@ -1,8 +1,4 @@
-version: '3.7'
-
-
 services:
-
   rq_exporter_custom_classes:
     build:
       context: .
@@ -16,13 +12,13 @@ services:
         protocol: tcp
         mode: host
     environment:
-      RQ_REDIS_HOST: "redis"
-      RQ_REDIS_PASS: "123456"
-      RQ_REDIS_DB: "1"
+      RQ_REDIS_HOST: 'redis'
+      RQ_REDIS_PASS: '123456'
+      RQ_REDIS_DB: '1'
       # Add the sample project's path to be able to import the classes
-      PYTHONPATH: "$${PYTHONPATH}:/home/project"
-      RQ_WORKER_CLASS: "custom.CustomWorker"
-      RQ_QUEUE_CLASS: "custom.CustomQueue"
+      PYTHONPATH: '$${PYTHONPATH}:/home/project'
+      RQ_WORKER_CLASS: 'custom.CustomWorker'
+      RQ_QUEUE_CLASS: 'custom.CustomQueue'
     volumes:
       # Mount the package for development
       - type: bind
@@ -30,14 +26,14 @@ services:
         target: /app/rq_exporter
       # Mount a sample project
       - type: bind
-        source: ./docker-compose/project
+        source: ./compose/project
         target: /home/project
     depends_on:
       - redis
 
   # RQ workers
   # To run multiple replicas use:
-  # docker-compose --compatibility up
+  # docker compose --compatibility up
   worker_custom_classes:
     image: mdawar/rq-exporter:latest
     entrypoint: []
@@ -52,7 +48,7 @@ services:
     volumes:
       # Mount a sample project
       - type: bind
-        source: ./docker-compose/project
+        source: ./compose/project
         target: /home/worker
     depends_on:
       - redis
@@ -67,14 +63,14 @@ services:
     # Pass 'custom' argument to use the RQ custom classes
     command: python -u enqueue.py custom
     environment:
-      RQ_REDIS_HOST: "redis"
-      RQ_REDIS_PASS: "123456"
-      RQ_REDIS_DB: "1"
+      RQ_REDIS_HOST: 'redis'
+      RQ_REDIS_PASS: '123456'
+      RQ_REDIS_DB: '1'
     working_dir: /home/enqueue
     volumes:
       # Mount a sample project
       - type: bind
-        source: ./docker-compose/project
+        source: ./compose/project
         target: /home/enqueue
     depends_on:
       - redis

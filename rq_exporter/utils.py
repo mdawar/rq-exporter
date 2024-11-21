@@ -61,10 +61,11 @@ def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
     return Redis(host=host, port=port, db=db, password=password)
 
 
-def get_workers_stats(worker_class=None):
+def get_workers_stats(connection, worker_class=None):
     """Get the RQ workers stats.
 
     Args:
+        connection (redis.Redis): Redis connection instance.
         worker_class (type): RQ Worker class
 
     Returns:
@@ -76,7 +77,7 @@ def get_workers_stats(worker_class=None):
     """
     worker_class = worker_class if worker_class is not None else Worker
 
-    workers = worker_class.all()
+    workers = worker_class.all(connection)
 
     return [
         {
@@ -91,10 +92,11 @@ def get_workers_stats(worker_class=None):
     ]
 
 
-def get_queue_jobs(queue_name, queue_class=None):
+def get_queue_jobs(connection, queue_name, queue_class=None):
     """Get the jobs by status of a Queue.
 
     Args:
+        connection (redis.Redis): Redis connection instance.
         queue_name (str): The RQ Queue name
         queue_class (type): RQ Queue class
 
@@ -107,7 +109,7 @@ def get_queue_jobs(queue_name, queue_class=None):
     """
     queue_class = queue_class if queue_class is not None else Queue
 
-    queue = queue_class(queue_name)
+    queue = queue_class(connection=connection, name=queue_name)
 
     return {
         JobStatus.QUEUED: queue.count,
@@ -119,10 +121,11 @@ def get_queue_jobs(queue_name, queue_class=None):
     }
 
 
-def get_jobs_by_queue(queue_class=None):
+def get_jobs_by_queue(connection, queue_class=None):
     """Get the current jobs by queue.
 
     Args:
+        connection (redis.Redis): Redis connection instance.
         queue_class (type): RQ Queue class
 
     Returns:
@@ -134,8 +137,8 @@ def get_jobs_by_queue(queue_class=None):
     """
     queue_class = queue_class if queue_class is not None else Queue
 
-    queues = queue_class.all()
+    queues = queue_class.all(connection)
 
     return {
-        q.name: get_queue_jobs(q.name, queue_class) for q in queues
+        q.name: get_queue_jobs(connection, q.name, queue_class) for q in queues
     }

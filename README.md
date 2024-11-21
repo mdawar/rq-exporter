@@ -17,7 +17,7 @@ Install the Python package:
 $ # Install the latest version
 $ pip install rq-exporter
 $ # Or install a specific version
-$ pip install rq-exporter==2.1.0
+$ pip install rq-exporter==3.0.0
 ```
 
 Or download the [Docker image](https://hub.docker.com/r/mdawar/rq-exporter):
@@ -26,7 +26,7 @@ Or download the [Docker image](https://hub.docker.com/r/mdawar/rq-exporter):
 $ # Pull the latest image
 $ docker pull mdawar/rq-exporter
 $ # Or pull a specific version
-$ docker pull mdawar/rq-exporter:v2.1.0
+$ docker pull mdawar/rq-exporter:v3.0.0
 ```
 
 The releases are available as [Docker image tags](https://hub.docker.com/r/mdawar/rq-exporter/tags).
@@ -204,7 +204,7 @@ The image can also be built using `docker compose`:
 $ docker compose build
 ```
 
-Check the `docker-compose.yml` file for usage example.
+Check the `compose.yml` file for usage example.
 
 ## Development
 
@@ -225,7 +225,7 @@ You can access the services on these ports on your local machine:
 - **Prometheus**: [`9090`](http://localhost:9090)
 - **Grafana**: [`3000`](http://localhost:3000) (Login using `admin:admin`)
 
-You can specify the services that you want to start by their name in the `docker-compose.yml` file:
+You can specify the services that you want to start by their name in the `compose.yml` file:
 
 ```sh
 $ # Example starting only the `rq_exporter` and `redis` services
@@ -252,11 +252,11 @@ $ docker compose down -v
 You can also start another `rq-exporter` instance that collects stats from a project using custom **RQ** `Worker` and `Queue` classes:
 
 ```sh
-$ # Using -f to pass multiple docker-compose files
-$ # docker-compose.custom.yml defines services using custom RQ classes
-$ docker compose -f docker-compose.yml -f docker-compose.custom.yml up
+$ # Using -f to pass multiple compose files
+$ # compose.custom.yml defines services using custom RQ classes
+$ docker compose -f compose.yml -f compose.custom.yml up
 $ # To cleanup you need to also pass the same files
-$ docker compose -f docker-compose.yml -f docker-compose.custom.yml down
+$ docker compose -f compose.yml -f compose.custom.yml down
 ```
 
 A new **RQ exporter** instance will be exposed on port `9727` on your local machine.
@@ -271,9 +271,9 @@ $ git clone <REPO_URL>
 $ # Change to the project directory
 $ cd rq-exporter
 $ # Create a new virtualenv
-$ python -m venv /path/to/env
+$ python -m venv .venv
 $ # Activate the environment
-$ source /path/to/env/bin/activate
+$ source .venv/bin/activate
 $ # Install the requirements
 $ pip install -r requirements.txt
 $ # Start the exporter on port 9726
