@@ -18,6 +18,7 @@ services:
     environment:
       RQ_REDIS_HOST: 'redis'
       RQ_REDIS_PASS: '123456'
+      RQ_EXPORTER_LOG_LEVEL: 'DEBUG'
     volumes:
       # Mount the package for development
       - type: bind
