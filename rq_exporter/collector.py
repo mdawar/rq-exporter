@@ -6,9 +6,13 @@ RQ metrics collector.
 import logging
 
 from prometheus_client import Summary
-from prometheus_client.core import GaugeMetricFamily, CounterMetricFamily
+from prometheus_client.core import (
+    GaugeMetricFamily, CounterMetricFamily,
+    SummaryMetricFamily
+)
+from .utils import get_workers_stats, get_jobs_by_queue, get_finished_jobs
+from collections import defaultdict
 
-from .utils import get_workers_stats, get_jobs_by_queue
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +73,16 @@ class RQCollector(object):
                 'rq_jobs', 'RQ jobs by state',
                 labels=['queue', 'status'],
             )
+            rq_job_execution_duration = SummaryMetricFamily(
+                'rq_job_execution_duration_milliseconds',
+                'RQ job execution duration in milliseconds',
+                labels=['queue', 'status'],
+            )
+            rq_job_queued_duration = SummaryMetricFamily(
+                'rq_job_queued_duration_milliseconds',
+                'RQ job queued duration in milliseconds',
+                labels=['queue', 'status'],
+            )
 
             workers = get_workers_stats(self.connection, self.worker_class)
             for worker in workers:
@@ -90,6 +104,34 @@ class RQCollector(object):
             yield rq_workers_success
             yield rq_workers_failed
             yield rq_workers_working_time
+
+            jobs = get_finished_jobs(self.connection, self.queue_class)
+            exec_durations = defaultdict(list)
+            queued_durations = defaultdict(list)
+
+            for job in jobs:
+                queue_name = getattr(job, 'origin', 'unknown')
+                status = getattr(job, 'get_status', lambda: 'unknown')()
+                created_at = getattr(job, 'created_at', None)
+                started_at = getattr(job, 'started_at', None)
+                ended_at = getattr(job, 'ended_at', None)
+
+                # Execution duration: started -> ended
+                if started_at and ended_at:
+                    duration = (ended_at - started_at).total_seconds() * 1000
+                    exec_durations[(queue_name, status)].append(duration)
+
+                # Queued duration: enqueued -> started
+                if created_at and started_at:
+                    duration = (started_at - created_at).total_seconds() * 1000
+                    queued_durations[(queue_name, status)].append(duration)
+
+            for (queue_name, status), durations in exec_durations.items():
+                rq_job_execution_duration.add_metric([queue_name, status], len(durations), sum(durations))
+            for (queue_name, status), durations in queued_durations.items():
+                rq_job_queued_duration.add_metric([queue_name, status], len(durations), sum(durations))
+            yield rq_job_execution_duration
+            yield rq_job_queued_duration
 
             for (queue_name, jobs) in get_jobs_by_queue(self.connection, self.queue_class).items():
                 for (status, count) in jobs.items():

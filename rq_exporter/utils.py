@@ -3,10 +3,14 @@ RQ exporter utility functions.
 
 """
 
+import logging
 from redis import Redis
 from redis.sentinel import Sentinel
 from rq import Queue, Worker
-from rq.job import JobStatus
+from rq.job import JobStatus, Job
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
@@ -142,3 +146,32 @@ def get_jobs_by_queue(connection, queue_class=None):
     return {
         q.name: get_queue_jobs(connection, q.name, queue_class) for q in queues
     }
+
+
+def get_finished_jobs(connection, queue_class=None) -> list[Job]:
+    """Get the current jobs by queue.
+
+    Args:
+        connection (redis.Redis): Redis connection instance.
+        queue_class (type): RQ Queue class
+
+    Returns:
+        dict: List of Jobs with details for each queue
+
+    Raises:
+        redis.exceptions.RedisError: On Redis connection errors
+    """
+    queue_class = queue_class if queue_class is not None else Queue
+
+    queues = queue_class.all(connection)
+    jobs = []
+    logger.debug("Found {} queues".format(len(queues)))
+    for q in queues:
+        finished_registry = q.finished_job_registry
+        finished_job_ids = finished_registry.get_job_ids()
+        logger.debug("Queue {} has {} finished jobs".format(q.name, len(finished_job_ids)))
+        for job_id in finished_job_ids:
+            job = q.fetch_job(job_id)
+            if job:
+                jobs.append(job)
+    return jobs
