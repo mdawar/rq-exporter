@@ -1,3 +1,6 @@
+lint:
+	python -m flake8 rq_exporter tests
+
 test:
 	python -m unittest
 

@@ -5,8 +5,6 @@ Tests for the rq_exporter.utils module.
 
 import unittest
 from unittest.mock import patch, mock_open, Mock, PropertyMock, call
-
-import rq
 from rq.job import JobStatus
 from redis.exceptions import RedisError
 
