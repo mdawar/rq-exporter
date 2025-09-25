@@ -20,6 +20,7 @@ Usage:
 import sys
 import signal
 import time
+import random
 import logging
 import argparse
 
@@ -219,32 +220,39 @@ def main():
         level=args.log_level.upper()
     )
 
-    # Register the RQ collector
-    try:
-        connection = get_redis_connection(
-            url=args.redis_url,
-            host=args.redis_host,
-            port=args.redis_port,
-            db=args.redis_db,
-            sentinel=args.sentinel_host,
-            sentinel_port=args.sentinel_port,
-            sentinel_master=args.sentinel_master,
-            password=args.redis_pass,
-            password_file=args.redis_pass_file,
-        )
+    max_attempts = 10
+    base_delay = 1  # seconds
+    for attempt in range(1, max_attempts + 1):
+        try:
+            connection = get_redis_connection(
+                url=args.redis_url,
+                host=args.redis_host,
+                port=args.redis_port,
+                db=args.redis_db,
+                sentinel=args.sentinel_host,
+                sentinel_port=args.sentinel_port,
+                sentinel_master=args.sentinel_master,
+                password=args.redis_pass,
+                password_file=args.redis_pass_file,
+            )
+            connection.ping()
+            logger.info('Connected to Redis successfully.')
+            break
+        except (IOError, RedisError) as e:
+            logger.error(f'Could not connect to Redis (attempt {attempt}/{max_attempts}): {e}')
+            if attempt == max_attempts:
+                logger.error('Max attempts reached. Exiting.')
+                sys.exit(1)
+            sleep_time = base_delay * (2 ** (attempt - 1)) + random.uniform(0, 0.5)
+            logger.info(f'Retrying in {sleep_time:.1f} seconds...')
+            time.sleep(sleep_time)
+        except (ImportError, AttributeError) as e:
+            logger.error(f'Incorrect RQ class location: {e}')
+            sys.exit(1)
 
-        worker_class = import_attribute(args.worker_class)
-        queue_class = import_attribute(args.queue_class)
-
-        # Register the RQ collector
-        # The `collect` method is called on registration
-        REGISTRY.register(RQCollector(connection, worker_class, queue_class))
-    except (IOError, RedisError):
-        logger.exception('There was an error starting the RQ exporter')
-        sys.exit(1)
-    except (ImportError, AttributeError):
-        logger.exception('Incorrect RQ class location')
-        sys.exit(1)
+    worker_class = import_attribute(args.worker_class)
+    queue_class = import_attribute(args.queue_class)
+    REGISTRY.register(RQCollector(connection, worker_class, queue_class))
 
     # Start the WSGI server
     start_wsgi_server(args.port, args.host)

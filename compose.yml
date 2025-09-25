@@ -4,10 +4,8 @@ volumes:
 
 services:
   rq_exporter:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: mdawar/rq-exporter:latest
+    build: .
+    image: jcoelho93/rq-exporter:latest
     # You can also configure the exporter using command line options
     # command: --redis-host redis --redis-pass 123456
     ports:
@@ -25,7 +23,13 @@ services:
         source: ./rq_exporter
         target: /app/rq_exporter
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:9726/metrics')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   redis:
     image: redis:7.4-alpine
@@ -39,6 +43,9 @@ services:
       - --bind 0.0.0.0
       - --requirepass 123456
       - --loglevel notice
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "123456", "ping"]
+      interval: 30s
 
   # RQ workers
   # To run multiple replicas use:
