@@ -22,6 +22,8 @@ DEFAULT_REDIS_PASS_FILE = None
 DEFAULT_LOG_LEVEL = 'INFO'
 DEFAULT_LOG_FORMAT = '[%(asctime)s] [%(name)s] [%(levelname)s]: %(message)s'
 DEFAULT_LOG_DATEFMT = '%Y-%m-%d %H:%M:%S'
+DEFAULT_SSL = False
+DEFAULT_SSL_NO_VERIFY = True
 
 # RQ classes
 RQ_WORKER_CLASS = os.environ.get('RQ_WORKER_CLASS', DEFAULT_WORKER_CLASS)
@@ -42,6 +44,8 @@ REDIS_SENTINEL_MASTER = os.environ.get('RQ_SENTINEL_MASTER', DEFAULT_SENTINEL_MA
 REDIS_DB = os.environ.get('RQ_REDIS_DB', DEFAULT_REDIS_DB)
 REDIS_PASS = os.environ.get('RQ_REDIS_PASS', DEFAULT_REDIS_PASS)
 REDIS_PASS_FILE = os.environ.get('RQ_REDIS_PASS_FILE', DEFAULT_REDIS_PASS_FILE)
+REDIS_SSL = os.environ.get('RQ_REDIS_SSL', str(DEFAULT_SSL)).lower() in ('true', '1', 'yes')
+REDIS_SSL_NO_VERIFY = os.environ.get('RQ_REDIS_SSL_NO_VERIFY', str(DEFAULT_SSL_NO_VERIFY)).lower() in ('true', '1', 'yes')
 
 # Logging config
 LOG_LEVEL = os.environ.get('RQ_EXPORTER_LOG_LEVEL', DEFAULT_LOG_LEVEL).upper()

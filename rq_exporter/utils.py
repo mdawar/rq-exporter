@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 
 def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
                          sentinel_port='26379', sentinel_master=None,
-                         password=None, password_file=None, url=None):
+                         password=None, password_file=None, url=None,
+                         ssl=False, ssl_cert_reqs=None):
     """Get the Redis connection instance.
 
     Note:
@@ -62,7 +63,7 @@ def get_redis_connection(host='localhost', port='6379', db='0', sentinel=None,
             sentinel_kwargs={'password': password, 'socket_timeout': 1}
         ).master_for(sentinel_master, password=password, db=db, socket_timeout=1)
 
-    return Redis(host=host, port=port, db=db, password=password)
+    return Redis(host=host, port=port, db=db, password=password, ssl=ssl, ssl_cert_reqs=ssl_cert_reqs)
 
 
 def get_workers_stats(connection, worker_class=None):

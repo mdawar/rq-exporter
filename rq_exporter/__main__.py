@@ -207,6 +207,22 @@ def parse_args():
         help='Logging date/time format string'
     )
 
+    parser.add_argument(
+        '--ssl',
+        action='store_true',
+        dest='ssl',
+        default=config.REDIS_SSL,
+        help='Use SSL to connect to Redis (Default: Disabled)'
+    )
+
+    parser.add_argument(
+        '--ssl-no-verify',
+        action='store_true',
+        dest='ssl_no_verify',
+        default=config.REDIS_SSL_NO_VERIFY,
+        help='Do not verify the Redis SSL certificate (Default: Disabled)'
+    )
+
     return parser.parse_args()
 
 
@@ -234,6 +250,8 @@ def main():
                 sentinel_master=args.sentinel_master,
                 password=args.redis_pass,
                 password_file=args.redis_pass_file,
+                ssl=args.ssl,
+                ssl_cert_reqs=None if args.ssl_no_verify else 'required',
             )
             connection.ping()
             logger.info('Connected to Redis successfully.')
