@@ -46,7 +46,9 @@ class GetRedisConnectionTestCase(unittest.TestCase):
                 host='redis_host',
                 port='6363',
                 db='1',
-                password=None
+                password=None,
+                ssl=False,
+                ssl_cert_reqs=None
             )
 
             self.assertEqual(connection, Redis.return_value)
@@ -232,7 +234,9 @@ class GetRedisConnectionTestCase(unittest.TestCase):
                 host='redis_host',
                 port='6379',
                 db='0',
-                password='123456'
+                password='123456',
+                ssl=False,
+                ssl_cert_reqs=None
             )
 
             self.assertEqual(connection, Redis.return_value)
@@ -257,7 +261,9 @@ class GetRedisConnectionTestCase(unittest.TestCase):
                 host='redis_host',
                 port='6379',
                 db='0',
-                password='FILEPASS'
+                password='FILEPASS',
+                ssl=False,
+                ssl_cert_reqs=None
             )
 
             self.assertEqual(connection, Redis.return_value)
