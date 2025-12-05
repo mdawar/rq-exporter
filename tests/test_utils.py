@@ -392,21 +392,11 @@ class GetQueueJobsTestCase(unittest.TestCase):
     def test_get_queue_jobs_return_value(self, Queue):
         """On success a dict of jobs count per status must be returned."""
         type(Queue.return_value).count = PropertyMock(return_value=2)
-        type(Queue.return_value.started_job_registry).count = PropertyMock(
-            return_value=3
-        )
-        type(Queue.return_value.finished_job_registry).count = PropertyMock(
-            return_value=15
-        )
-        type(Queue.return_value.failed_job_registry).count = PropertyMock(
-            return_value=5
-        )
-        type(Queue.return_value.deferred_job_registry).count = PropertyMock(
-            return_value=1
-        )
-        type(Queue.return_value.scheduled_job_registry).count = PropertyMock(
-            return_value=4
-        )
+        Queue.return_value.started_job_registry.get_job_count.return_value = 3
+        Queue.return_value.finished_job_registry.get_job_count.return_value = 15
+        Queue.return_value.failed_job_registry.get_job_count.return_value = 5
+        Queue.return_value.deferred_job_registry.get_job_count.return_value = 1
+        Queue.return_value.scheduled_job_registry.get_job_count.return_value = 4
 
         connection = Mock()
 
