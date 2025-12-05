@@ -113,11 +113,11 @@ def get_queue_jobs(connection, queue_name, queue_class=None):
 
     return {
         JobStatus.QUEUED: queue.count,
-        JobStatus.STARTED: queue.started_job_registry.count,
-        JobStatus.FINISHED: queue.finished_job_registry.count,
-        JobStatus.FAILED: queue.failed_job_registry.count,
-        JobStatus.DEFERRED: queue.deferred_job_registry.count,
-        JobStatus.SCHEDULED: queue.scheduled_job_registry.count
+        JobStatus.STARTED: queue.started_job_registry.get_job_count(cleanup=False),
+        JobStatus.FINISHED: queue.finished_job_registry.get_job_count(cleanup=False),
+        JobStatus.FAILED: queue.failed_job_registry.get_job_count(cleanup=False),
+        JobStatus.DEFERRED: queue.deferred_job_registry.get_job_count(cleanup=False),
+        JobStatus.SCHEDULED: queue.scheduled_job_registry.get_job_count(cleanup=False)
     }
 
 
